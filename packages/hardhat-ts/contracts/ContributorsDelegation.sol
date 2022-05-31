@@ -19,13 +19,13 @@ contract ContributorsDelegation is Ownable {
   event Delegate(address contributor, address delegate, uint256 contributorId);
   event Undelegate(address delegate, uint256 contributorId);
 
-  modifier isOwnerOrRegistar(address _caller) {
+  modifier isOwnerOrRegistar() {
     require(msg.sender == super.owner() || msg.sender == registrar, "Caller must be owner or registrar");
     _;
   }
 
-  modifier isContributor(address _caller, uint256 _contributorId) {
-    require(_caller == contributors.ownerOf(_contributorId), "Caller must be owner of token");
+  modifier isContributor(uint256 _contributorId) {
+    require(msg.sender == contributors.ownerOf(_contributorId), "Caller must be owner of token");
     _;
   }
 
@@ -36,14 +36,14 @@ contract ContributorsDelegation is Ownable {
   }
 
   //Gas : 56641
-  function delegate(uint256 _contributorId, address _delegate) external isContributor(msg.sender, _contributorId) {
+  function delegate(uint256 _contributorId, address _delegate) external isContributor(_contributorId) {
     address contributorAddress = contributors.ownerOf(_contributorId);
     delegateToContributor[_delegate] = _contributorId;
     emit Delegate(contributorAddress, _delegate, _contributorId);
   }
 
   //Gas : 32501
-  function undelegate(uint256 _contributorId, address _delegate) external isContributor(msg.sender, _contributorId) {
+  function undelegate(uint256 _contributorId, address _delegate) external isContributor(_contributorId) {
     delete delegateToContributor[_delegate];
     emit Undelegate(_delegate, _contributorId);
   }
@@ -59,12 +59,12 @@ contract ContributorsDelegation is Ownable {
   }
 
   //Gas : 26449
-  function setRegistrar(address _registar) external isOwnerOrRegistar(msg.sender) {
+  function setRegistrar(address _registar) external isOwnerOrRegistar {
     registrar = _registar;
   }
 
   //Gas : 29183
-  function setContributors(address _address) external isOwnerOrRegistar(msg.sender) {
+  function setContributors(address _address) external isOwnerOrRegistar {
     contributors = IContributors(_address);
   }
 }
