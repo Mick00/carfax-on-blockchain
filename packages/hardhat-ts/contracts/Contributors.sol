@@ -6,20 +6,9 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Contributors is ERC721URIStorage, Ownable {
-  //For now since we can't delete from mapping.
-  struct Confirmation {
-    string ipfsHash;
-    bool isClaimed;
-  }
-
-  //registrar => contributor => confirmation
-  mapping(address => mapping(address => Confirmation)) private waitingForConfirmation;
-
+  //registrar => contributor => ipfshash
+  mapping(address => mapping(address => string)) private waitingForConfirmation;
   mapping(uint256 => address) private tokenToContributor;
-
-  //Used for unique contributor.
-  //Also, this remove the possibility of 2 registar confirming the same contributor.
-  string[] private claimedConfirmationHash;
 
   //id count.
   uint256 private tokenIds;
@@ -29,75 +18,56 @@ contract Contributors is ERC721URIStorage, Ownable {
   event ConfirmedRegistration(address contributor, uint256 tokenId);
   event RemovedRegistrator(address registrator, uint256 tokenId);
 
-  //Modifier
-  modifier isHashUnique(string memory hash) {
-    for (uint256 i = 0; i < claimedConfirmationHash.length; i++) {
-      if (keccak256(abi.encodePacked((claimedConfirmationHash[i]))) == keccak256(abi.encodePacked((hash)))) {
-        return;
-      }
-    }
-    _;
-  }
+  //Gas to deploy contract : 3233690
+  constructor() ERC721("CarFaxContributor", "CFC") {}
 
-  constructor() ERC721("CarFaxContributors", "CFC") {}
-
-  function register(string memory _contributorHash, address _contributor) external isHashUnique(_contributorHash) {
+  //Gas without registrar validation : 48671
+  function register(string memory _contributorHash, address _contributor) external {
     address registrar = msg.sender;
     // caller must be a valid registrar
 
     // if confirmation already exist?
 
-    waitingForConfirmation[registrar][_contributor] = Confirmation(_contributorHash, false);
+    waitingForConfirmation[registrar][_contributor] = _contributorHash;
 
     emit Registered(_contributorHash, _contributor, registrar);
   }
 
+  // Gas : 124010
   function confirmRegistration(address _registrarAddress) external returns (uint256) {
     address contributor = msg.sender;
-    Confirmation storage confirmation = waitingForConfirmation[_registrarAddress][contributor];
+    string storage ipfsHash = waitingForConfirmation[_registrarAddress][contributor];
 
-    require(!_isHashEmpty(confirmation.ipfsHash), "Confirmation does not exist.");
-    require(!confirmation.isClaimed, "Contributor already claimed token.");
+    require(!_isHashEmpty(ipfsHash), "Confirmation does not exist.");
 
     tokenIds++;
     tokenToContributor[tokenIds] = contributor;
     super._mint(contributor, tokenIds);
-    super._setTokenURI(tokenIds, confirmation.ipfsHash);
+    super._setTokenURI(tokenIds, ipfsHash);
 
-    confirmation.isClaimed = true;
-    claimedConfirmationHash.push(confirmation.ipfsHash);
+    delete waitingForConfirmation[_registrarAddress][contributor];
 
     emit ConfirmedRegistration(contributor, tokenIds);
 
     return tokenIds;
   }
 
+  //Gas : 0
   function getTokenIds() external view returns (uint256) {
     return tokenIds;
   }
 
-  function getConfirmation(address registrar, address contributor) external view returns (Confirmation memory) {
+  //Gas : 0
+  function getConfirmationHash(address registrar, address contributor) external view returns (string memory) {
     return waitingForConfirmation[registrar][contributor];
   }
 
   //===============================================================================
 
+  //Gas : 39092
   function removeContributor(uint256 _tokenId) external onlyOwner {
     address registrator = super.ownerOf(_tokenId);
-
-    // delete data in case they register back in futur ?
-    // how do i get registar to change confirmation ?
-
-    // what i do about baseuri ?
-    string memory hash = super.tokenURI(_tokenId);
-    for (uint256 i = 0; i < claimedConfirmationHash.length; i++) {
-      if (keccak256(abi.encodePacked((claimedConfirmationHash[i]))) == keccak256(abi.encodePacked((hash)))) {
-        delete claimedConfirmationHash[i];
-        super._burn(_tokenId);
-        break;
-      }
-    }
-
+    super._burn(_tokenId);
     emit RemovedRegistrator(registrator, _tokenId);
   }
 
