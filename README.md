@@ -1,3 +1,4 @@
+# Prisma and DB config
 Creating the db
 
 you need to have docker and docker compose https://docs.docker.com/compose/install/
