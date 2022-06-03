@@ -1,3 +1,35 @@
+Creating the db
+
+you need to have docker and docker compose https://docs.docker.com/compose/install/
+
+    go in the root project and simply type this command: docker-compose up
+    you can now see your db in docker and is on the localhost:3306
+
+Working with prisma
+
+    You need to create a database prisma in you mysql Db***************
+    *do a npm install before *the connection to the db is already set with the mysql container running on localhost:3306 to make a migration * migrations is to keep your database schema in sync with your Prisma schema as it evolves
+        you need to modify the schema.prisma file under the prisma folder
+        for the first migration you need to call this command in the root folder : npx prisma migrate dev --name init
+        Then for the other migrations command : npx prisma migrate dev --name added_job_title
+        Detailed documentation: https://www.prisma.io/docs/concepts/components/prisma-migrate
+
+to make a introspection db -> prisma schema
+
+    make the change in the mysql db and then update the schema
+    with this command : npx prisma introspect --force
+    Detailed documentation: https://www.prisma.io/docs/concepts/components/introspection
+
+Prisma client (used to make queries using objects )
+
+    install it :npm install @prisma/client
+    using the client to make queries using objects
+    ex: querying a frequency record
+    1. import the @prisma/client by adding the line : const { PrismaClient } = require("@prisma/client")
+    2. make a object frequency by calling the PrismaClient() constructor : const prisma = new PrismaClient()
+    3. make the query in this query we are asking for the first record (the fonction needs to be async) : const frequency1 = await frequency.findFirst()
+    4. we can now access the frequency object like this : frequency1.days
+
 # 🏗 Scaffold-Eth Typescript
 
 ## Typescript
