@@ -6,33 +6,36 @@ generator client {
 }
 
 datasource db {
-   provider = "mysql"
-   url      = "mysql://root:carfax123@localhost:3306/prisma"
+  provider = "mysql"
+  url      = "mysql://root:carfax123@localhost:3306/prisma"
 }
+
 model Contributor {
 
-  id        Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  sectorOfActivity     String   @db.VarChar(30)
+  CompanyName String @db.VarChar(40)
 
-  dateOfRegistration DateTime @default(now()) @db.Timestamp(6)
+  SectorOfActivity String @db.VarChar(30)
 
-  Address   String   @db.VarChar(255)
+  DateOfRegistration DateTime @default(now()) @db.Timestamp(6)
 
-  Email String  @db.VarChar(100)
+  Address String @db.VarChar(255)
 
-  website String @db.VarChar(130)
+  Email String @db.VarChar(100)
+
+  Website String @db.VarChar(130)
 
   PhoneNumber String @db.VarChar(130)
 
-  walletAdress String @db.VarChar(64)
+  WalletAddress String @db.VarChar(64)
 
 }
 
-    // Name of the company
-    // Sector of activity (reparator or insurance)
-    // Address
-    // Email address
-    // Website
-    // Phone number
-    // Wallet address that will mint the NFT
+// Name of the company
+// Sector of activity (reparator or insurance)
+// Address
+// Email address
+// Website
+// Phone number
+// Wallet address that will mint the NFT
