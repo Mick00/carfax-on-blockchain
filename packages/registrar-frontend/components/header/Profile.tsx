@@ -14,7 +14,7 @@ import {
   Button,
   Divider,
 } from "@mui/material";
-const ProfileDD = (): JSX.Element => {
+const ProfileDD = (props): JSX.Element => {
   const [anchorEl4, setAnchorEl4] = React.useState(null);
 
   const handleClick4 = (event: any) => {
@@ -65,7 +65,7 @@ const ProfileDD = (): JSX.Element => {
                 ml: 1,
               }}
             >
-              Mecano
+              {props.address.slice(0-5) + "..." + props.address.slice(37-42)}
             </Typography>
             <ExpandMoreIcon width="20" height="20" />
           </Box>
