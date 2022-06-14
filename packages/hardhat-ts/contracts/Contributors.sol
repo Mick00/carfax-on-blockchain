@@ -10,7 +10,7 @@ contract Contributors is ERC721URIStorage, Ownable {
   mapping(address => mapping(address => string)) private waitingForConfirmation;
   mapping(uint256 => address) private tokenToContributor;
 
-  mapping(address => bool) private registrars;
+  mapping(address => bool) public registrars;
 
   //id count.
   uint256 private tokenIds;
