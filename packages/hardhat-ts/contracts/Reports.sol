@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.10;
+pragma solidity 0.8.1;
 
-import "./ERC721/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 interface IContributorsDelegation {
@@ -13,13 +14,15 @@ interface ICars {
 }
 
 contract Reports is ERC721URIStorage, Ownable {
-  //id count.
   uint256 private tokenIds;
 
   uint256 private lastBlock;
 
-  IContributorsDelegation contributors;
-  ICars cars;
+  mapping(uint256 => uint256) private reportIdToCarId;
+  mapping(uint256 => uint256[]) private carIdtoReportsId;
+
+  IContributorsDelegation private contributors;
+  ICars private cars;
 
   event ReportCreated(uint256 car, address delegated, uint256 report);
   event ReportUpdated(address delegated, uint256 report);
@@ -35,8 +38,11 @@ contract Reports is ERC721URIStorage, Ownable {
     require(cars.ownerOf(_carId) != address(0), "Car must be existing.");
 
     tokenIds++;
-    super._mint(_carId, tokenIds);
+    super._mint(msg.sender, tokenIds);
     super._setTokenURI(tokenIds, _reportHash);
+
+    reportIdToCarId[tokenIds] = _carId;
+    carIdtoReportsId[_carId].push(tokenIds);
 
     emit ReportCreated(_carId, msg.sender, tokenIds);
 
@@ -45,7 +51,7 @@ contract Reports is ERC721URIStorage, Ownable {
 
   function update(uint256 _reportId, string memory _reportHash) external {
     require(contributors.isDelegatedOf(msg.sender) != 0, "Caller must be a delegated.");
-    //require msg.sender to be the one that created the report.
+    require(ownerOf(_reportId) == msg.sender, "Caller must be creator.");
 
     super._setTokenURI(_reportId, _reportHash);
 
@@ -56,6 +62,7 @@ contract Reports is ERC721URIStorage, Ownable {
 
   function burn(uint256 _reportId, string memory _reason) external {
     // require msg.sender to be creator or contributors in case creator lose key.
+    require(ownerOf(_reportId) == msg.sender, "Caller must be creator.");
 
     super._burn(_reportId);
 
@@ -66,8 +73,16 @@ contract Reports is ERC721URIStorage, Ownable {
     return lastBlock;
   }
 
-  function getCreator(uint256 _reportId) external returns (address) {
-    return address(0);
+  function getCreator(uint256 _reportId) external view returns (address) {
+    return ownerOf(_reportId);
+  }
+
+  function getCarReports(uint256 _carId) external view returns (uint256[] memory) {
+    return carIdtoReportsId[_carId];
+  }
+
+  function getReportCar(uint256 _reportId) external view returns (uint256) {
+    return reportIdToCarId[_reportId];
   }
 
   function setContributors(address _contributors) external onlyOwner {
