@@ -12,8 +12,8 @@ export type { IERC721Receiver } from "./IERC721Receiver";
 export type { ERC165 } from "./ERC165";
 export type { IERC165 } from "./IERC165";
 export type { Contributors } from "./Contributors";
-export type { YourContract } from "./YourContract";
-export type { YourNFT } from "./YourNFT";
+export type { ContributorsDelegation } from "./ContributorsDelegation";
+export type { IContributors } from "./IContributors";
 
 export { Ownable__factory } from "./factories/Ownable__factory";
 export { ERC721__factory } from "./factories/ERC721__factory";
@@ -26,5 +26,5 @@ export { IERC721Receiver__factory } from "./factories/IERC721Receiver__factory";
 export { ERC165__factory } from "./factories/ERC165__factory";
 export { IERC165__factory } from "./factories/IERC165__factory";
 export { Contributors__factory } from "./factories/Contributors__factory";
-export { YourContract__factory } from "./factories/YourContract__factory";
-export { YourNFT__factory } from "./factories/YourNFT__factory";
+export { ContributorsDelegation__factory } from "./factories/ContributorsDelegation__factory";
+export { IContributors__factory } from "./factories/IContributors__factory";

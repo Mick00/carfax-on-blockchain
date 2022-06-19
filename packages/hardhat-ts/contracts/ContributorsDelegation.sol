@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.10;
+pragma solidity 0.8.14;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Address.sol";
 
 interface IContributors {
   function balanceOf(address owner) external returns (uint256);
@@ -11,6 +12,8 @@ interface IContributors {
 
 //Each Registrar got their own contract
 contract ContributorsDelegation is Ownable {
+  using Address for address;
+
   address private registrar;
   IContributors private contributors;
 
@@ -64,7 +67,8 @@ contract ContributorsDelegation is Ownable {
   }
 
   //Gas : 29183
-  function setContributors(address _address) external isOwnerOrRegistar {
-    contributors = IContributors(_address);
+  function setContributors(address _contributors) external isOwnerOrRegistar {
+    require(_contributors.isContract(), "Contributors must be a valid contract");
+    contributors = IContributors(_contributors);
   }
 }
