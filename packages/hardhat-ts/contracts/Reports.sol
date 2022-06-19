@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.1;
+pragma solidity 0.8.14;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Address.sol";
 
 interface IContributorsDelegation {
   function isDelegatedOf(address _delegated) external view returns (uint256);
@@ -14,6 +15,8 @@ interface ICars {
 }
 
 contract Reports is ERC721URIStorage, Ownable {
+  using Address for address;
+
   uint256 private tokenIds;
 
   uint256 private lastBlock;
@@ -83,6 +86,11 @@ contract Reports is ERC721URIStorage, Ownable {
 
   function getReportCar(uint256 _reportId) external view returns (uint256) {
     return reportIdToCarId[_reportId];
+  }
+
+  //Gas : 0
+  function getTokenIds() external view returns (uint256) {
+    return tokenIds;
   }
 
   function setContributors(address _contributors) external onlyOwner {

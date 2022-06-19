@@ -21,7 +21,6 @@ describe('ContributorsDelegation', function () {
   let deployer: SignerWithAddress;
   let contributor: SignerWithAddress;
   let registrar: SignerWithAddress;
-
   let delegated: SignerWithAddress;
 
   beforeEach(async function () {
