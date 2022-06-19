@@ -7,9 +7,10 @@ import { BigNumber } from 'ethers';
 import { Cars, Cars__factory } from 'api/contract-types';
 import hre from 'hardhat';
 
-import { CARS_DEPLOYMENT } from '../deploy/03_Cars';
+import { CARS_DEPLOYMENT } from '../deploy/02_Cars';
 
 import { IS_EXISTENT_TOKEN, CAR_MINTED } from './helpers/errors';
+
 import { equal } from 'assert';
 
 const xhre = hre;
