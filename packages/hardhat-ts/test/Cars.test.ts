@@ -7,9 +7,10 @@ import { BigNumber } from 'ethers';
 import { Cars, Cars__factory } from 'api/contract-types';
 import hre from 'hardhat';
 
-import { CARS_DEPLOYMENT } from '../deploy/03_Cars';
+import { CARS_DEPLOYMENT } from '../deploy/02_Cars';
 
 import { IS_EXISTENT_TOKEN, CAR_MINTED } from './helpers/errors';
+
 import { equal } from 'assert';
 
 const xhre = hre;
@@ -32,7 +33,7 @@ describe('Cars', function () {
 
   it('Should return 0 since no car registered', async () => {
     expect(await carsContract.getOdometerFromCar(0)).to.equal(0);
-    expect(await carsContract.getOdometerFromSerialNumber("123")).to.equal(0);
+    expect(await carsContract.getOdometerFromSerialNumber('123')).to.equal(0);
     expect(await carsContract.getTokenIds()).to.equal(0);
   });
 
