@@ -76,11 +76,11 @@ describe('Reports', function () {
 
   it('Should return 0 for nonexistent report', async () => {
     await expect(reportsContract.getCreator(0)).revertedWith(IS_EXISTENT_TOKEN);
-  })
+  });
 
   it('Should return 0 since no update', async () => {
     expect(await reportsContract.lastUpdate()).to.equal(0);
-  })
+  });
 
   describe('Create report process', function () {
     let carId: BigNumber;
@@ -88,15 +88,15 @@ describe('Reports', function () {
     let reportId: BigNumber;
     const HASH = 'TEST';
 
-    const SERIALNUMBER = "ABC-123";
+    const SERIALNUMBER = 'ABC-123';
     const ODOMETER = 123;
-    const CARHASH = "CAR-HASH";
+    const CARHASH = 'CAR-HASH';
     beforeEach(async () => {
       await contributorsContract.addRegistrar(registrar.address);
       await contributorsContract.connect(registrar).register(HASH, contributor.address);
       await contributorsContract.connect(contributor).confirmRegistration(registrar.address);
       contributorId = await contributorsContract.getTokenIds();
-      await contributorsDelegationContract.setContributors(contributorsContract.address);
+      await contributorsDelegationContract.setContributorsContract(contributorsContract.address);
       await contributorsDelegationContract.connect(contributor).delegate(contributorId, delegated.address);
 
       await carsContract.connect(delegated).register(SERIALNUMBER, ODOMETER, CARHASH);
@@ -131,7 +131,6 @@ describe('Reports', function () {
       await expect(reportsContract.connect(delegated).create(2, HASH)).revertedWith(IS_EXISTENT_TOKEN);
     });
 
-
     describe('Update process', function () {
       beforeEach(async () => {
         await reportsContract.connect(delegated).create(carId, HASH);
@@ -161,7 +160,6 @@ describe('Reports', function () {
           await expect(reportsContract.connect(contributor).update(reportId, HASH)).revertedWith(IS_CREATOR);
         });
       });
-
     });
   });
 });
