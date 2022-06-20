@@ -2,9 +2,9 @@ import '../helpers/hardhat-imports';
 import './helpers/chai-imports';
 
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import { Contributors, Contributors__factory } from 'api/contract-types';
 import { expect } from 'chai';
 import { BigNumber } from 'ethers';
-import { Contributors, Contributors__factory } from 'api/contract-types';
 import hre from 'hardhat';
 
 import { CONTRIBUTORS_DEPLOYMENT } from '../deploy/00_Contributors';

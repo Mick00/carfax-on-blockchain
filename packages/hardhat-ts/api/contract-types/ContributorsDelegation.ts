@@ -21,12 +21,10 @@ export interface ContributorsDelegationInterface extends utils.Interface {
   contractName: "ContributorsDelegation";
   functions: {
     "delegate(uint256,address)": FunctionFragment;
-    "getRegistrar()": FunctionFragment;
     "isDelegatedOf(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "setContributors(address)": FunctionFragment;
-    "setRegistrar(address)": FunctionFragment;
+    "setContributorsContract(address)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "undelegate(uint256,address)": FunctionFragment;
   };
@@ -34,10 +32,6 @@ export interface ContributorsDelegationInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "delegate",
     values: [BigNumberish, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getRegistrar",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "isDelegatedOf",
@@ -49,11 +43,7 @@ export interface ContributorsDelegationInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "setContributors",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setRegistrar",
+    functionFragment: "setContributorsContract",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -67,10 +57,6 @@ export interface ContributorsDelegationInterface extends utils.Interface {
 
   decodeFunctionResult(functionFragment: "delegate", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "getRegistrar",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "isDelegatedOf",
     data: BytesLike
   ): Result;
@@ -80,11 +66,7 @@ export interface ContributorsDelegationInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setContributors",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setRegistrar",
+    functionFragment: "setContributorsContract",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -160,8 +142,6 @@ export interface ContributorsDelegation extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    getRegistrar(overrides?: CallOverrides): Promise<[string]>;
-
     isDelegatedOf(
       _delegated: string,
       overrides?: CallOverrides
@@ -173,13 +153,8 @@ export interface ContributorsDelegation extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setContributors(
+    setContributorsContract(
       _contributors: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    setRegistrar(
-      _registar: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -201,8 +176,6 @@ export interface ContributorsDelegation extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  getRegistrar(overrides?: CallOverrides): Promise<string>;
-
   isDelegatedOf(
     _delegated: string,
     overrides?: CallOverrides
@@ -214,13 +187,8 @@ export interface ContributorsDelegation extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setContributors(
+  setContributorsContract(
     _contributors: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  setRegistrar(
-    _registar: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -242,8 +210,6 @@ export interface ContributorsDelegation extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    getRegistrar(overrides?: CallOverrides): Promise<string>;
-
     isDelegatedOf(
       _delegated: string,
       overrides?: CallOverrides
@@ -253,12 +219,10 @@ export interface ContributorsDelegation extends BaseContract {
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
-    setContributors(
+    setContributorsContract(
       _contributors: string,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    setRegistrar(_registar: string, overrides?: CallOverrides): Promise<void>;
 
     transferOwnership(
       newOwner: string,
@@ -307,8 +271,6 @@ export interface ContributorsDelegation extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    getRegistrar(overrides?: CallOverrides): Promise<BigNumber>;
-
     isDelegatedOf(
       _delegated: string,
       overrides?: CallOverrides
@@ -320,13 +282,8 @@ export interface ContributorsDelegation extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setContributors(
+    setContributorsContract(
       _contributors: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    setRegistrar(
-      _registar: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -349,8 +306,6 @@ export interface ContributorsDelegation extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    getRegistrar(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     isDelegatedOf(
       _delegated: string,
       overrides?: CallOverrides
@@ -362,13 +317,8 @@ export interface ContributorsDelegation extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setContributors(
+    setContributorsContract(
       _contributors: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setRegistrar(
-      _registar: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
