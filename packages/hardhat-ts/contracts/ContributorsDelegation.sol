@@ -14,7 +14,6 @@ interface IContributors {
 contract ContributorsDelegation is Ownable {
   using Address for address;
 
-  address private registrar;
   IContributors private contributors;
 
   mapping(address => uint256) private delegateToContributor;
@@ -22,25 +21,19 @@ contract ContributorsDelegation is Ownable {
   event Delegate(address contributor, address delegate, uint256 contributorId);
   event Undelegate(address delegate, uint256 contributorId);
 
-  modifier isOwnerOrRegistar() {
-    require(msg.sender == super.owner() || msg.sender == registrar, "Caller must be owner or registrar");
-    _;
-  }
-
   modifier isContributor(uint256 _contributorId) {
     require(msg.sender == contributors.ownerOf(_contributorId), "Caller must be owner of token");
     _;
   }
 
   //Gas : 890564
-  constructor(address _registar, address _contributors) {
-    registrar = _registar;
+  constructor(address _contributors) {
     contributors = IContributors(_contributors);
   }
 
   //Gas : 56641
   function delegate(uint256 _contributorId, address _delegate) external isContributor(_contributorId) {
-    address contributorAddress = contributors.ownerOf(_contributorId);
+    address contributorAddress = msg.sender;
     delegateToContributor[_delegate] = _contributorId;
     emit Delegate(contributorAddress, _delegate, _contributorId);
   }
@@ -56,18 +49,8 @@ contract ContributorsDelegation is Ownable {
     return delegateToContributor[_delegated];
   }
 
-  //Gas : 0
-  function getRegistrar() external view returns (address) {
-    return registrar;
-  }
-
-  //Gas : 26449
-  function setRegistrar(address _registar) external isOwnerOrRegistar {
-    registrar = _registar;
-  }
-
   //Gas : 29183
-  function setContributors(address _contributors) external isOwnerOrRegistar {
+  function setContributorsContract(address _contributors) external onlyOwner {
     require(_contributors.isContract(), "Contributors must be a valid contract");
     contributors = IContributors(_contributors);
   }

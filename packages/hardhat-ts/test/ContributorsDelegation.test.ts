@@ -2,15 +2,15 @@ import '../helpers/hardhat-imports';
 import './helpers/chai-imports';
 
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import { Contributors, Contributors__factory, ContributorsDelegation, ContributorsDelegation__factory } from 'api/contract-types';
 import { expect } from 'chai';
 import { BigNumber } from 'ethers';
-import { Contributors, Contributors__factory, ContributorsDelegation, ContributorsDelegation__factory } from 'api/contract-types';
 import hre from 'hardhat';
 
 import { CONTRIBUTORS_DEPLOYMENT } from '../deploy/00_Contributors';
 import { CONTRIBUTORSDELEGATION_DEPLOYMENT } from '../deploy/01_ContributorsDelegation';
 
-import { IS_OWNER_OR_REGISTRAR, IS_CONTRIBUTOR, IS_CONTRACT, IS_EXISTENT_TOKEN } from './helpers/errors';
+import { IS_CONTRIBUTOR, IS_CONTRACT, IS_EXISTENT_TOKEN, ONLY_OWNER } from './helpers/errors';
 
 const xhre = hre;
 const { deployments, getNamedAccounts, getUnnamedAccounts } = xhre;
@@ -37,27 +37,12 @@ describe('ContributorsDelegation', function () {
     contributorsDelegationContract = ContributorsDelegation__factory.connect(deploymentContributorsDelegation.address, deployer);
   });
 
-  it('Should let owner set registrar', async () => {
-    await contributorsDelegationContract.setRegistrar(registrar.address);
-    expect(await contributorsDelegationContract.getRegistrar()).to.equal(registrar.address);
-  });
-
-  it('Should let registrar set registrar', async () => {
-    await contributorsDelegationContract.setRegistrar(registrar.address);
-    await contributorsDelegationContract.connect(registrar).setRegistrar(deployer.address);
-    expect(await contributorsDelegationContract.getRegistrar()).to.equal(deployer.address);
-  });
-
   it('Should not be working because Contributors address not a contract', async () => {
-    await expect(contributorsDelegationContract.setContributors(delegated.address)).revertedWith(IS_CONTRACT);
-  });
-
-  it('Should only let owner or registar set registrar', async () => {
-    await expect(contributorsDelegationContract.connect(contributor).setRegistrar(contributorsContract.address)).revertedWith(IS_OWNER_OR_REGISTRAR);
+    await expect(contributorsDelegationContract.setContributorsContract(delegated.address)).revertedWith(IS_CONTRACT);
   });
 
   it('Should only let owner or registar set contributors', async () => {
-    await expect(contributorsDelegationContract.connect(contributor).setContributors(contributorsContract.address)).revertedWith(IS_OWNER_OR_REGISTRAR);
+    await expect(contributorsDelegationContract.connect(contributor).setContributorsContract(contributorsContract.address)).revertedWith(ONLY_OWNER);
   });
 
   describe('Delegate process', function () {
@@ -68,7 +53,7 @@ describe('ContributorsDelegation', function () {
       await contributorsContract.connect(contributor).confirmRegistration(registrar.address);
       id = await contributorsContract.getTokenIds();
 
-      await contributorsDelegationContract.setContributors(contributorsContract.address);
+      await contributorsDelegationContract.setContributorsContract(contributorsContract.address);
     });
 
     it('Should add a new delegated', async () => {

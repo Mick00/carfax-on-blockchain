@@ -14,7 +14,7 @@ const deployContributorsDelegation: DeployFunction = async (hre: THardhatRuntime
   await deploy(CONTRIBUTORSDELEGATION_DEPLOYMENT, {
     from: deployer,
     log: silent(),
-    args: [deployer, Contributors.address]
+    args: [Contributors.address],
   });
 };
 export default deployContributorsDelegation;
