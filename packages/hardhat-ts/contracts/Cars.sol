@@ -10,8 +10,8 @@ contract Cars is Ownable, ERC721URIStorage {
 
   uint256 private tokenIds;
 
-  event Registered(uint256 carId, string serialNumber, uint256 odometer, string hash);
-  event UpdateOdometer(uint256 carId, uint256 odometer);
+  event Registered(uint256 indexed carId, string indexed serialNumber, uint256 odometer, string hash);
+  event UpdateOdometer(uint256 indexed carId, uint256 odometer);
 
   constructor() ERC721("CarFaxCars", "CFCa") {}
 

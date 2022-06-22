@@ -584,14 +584,14 @@ export interface Cars extends BaseContract {
     ): OwnershipTransferredEventFilter;
 
     "Registered(uint256,string,uint256,string)"(
-      carId?: null,
-      serialNumber?: null,
+      carId?: BigNumberish | null,
+      serialNumber?: string | null,
       odometer?: null,
       hash?: null
     ): RegisteredEventFilter;
     Registered(
-      carId?: null,
-      serialNumber?: null,
+      carId?: BigNumberish | null,
+      serialNumber?: string | null,
       odometer?: null,
       hash?: null
     ): RegisteredEventFilter;
@@ -608,10 +608,13 @@ export interface Cars extends BaseContract {
     ): TransferEventFilter;
 
     "UpdateOdometer(uint256,uint256)"(
-      carId?: null,
+      carId?: BigNumberish | null,
       odometer?: null
     ): UpdateOdometerEventFilter;
-    UpdateOdometer(carId?: null, odometer?: null): UpdateOdometerEventFilter;
+    UpdateOdometer(
+      carId?: BigNumberish | null,
+      odometer?: null
+    ): UpdateOdometerEventFilter;
   };
 
   estimateGas: {

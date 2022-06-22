@@ -21,7 +21,7 @@ import { CONTRIBUTORSDELEGATION_DEPLOYMENT } from '../deploy/01_ContributorsDele
 import { CARS_DEPLOYMENT } from '../deploy/02_Cars';
 import { REPORTS_DEPLOYMENT } from '../deploy/03_Reports';
 
-import { IS_EXISTENT_TOKEN, ONLY_OWNER, IS_DELEGATED, IS_CREATOR } from './helpers/errors';
+import { IS_EXISTENT_TOKEN, ONLY_OWNER, IS_DELEGATED } from './helpers/errors';
 
 const xhre = hre;
 const { deployments, getNamedAccounts, getUnnamedAccounts } = xhre;
@@ -66,20 +66,17 @@ describe('Reports', function () {
   });
 
   it('Should return 0 since no nonexistent report', async () => {
-    expect(await reportsContract.getReportCar(0)).to.equal(0);
+    expect(await reportsContract.getCarForReport(0)).to.equal(0);
   });
 
   it('Should return empty array since nonexistent car', async () => {
-    expect(await reportsContract.getCarReports(0)).to.be.instanceOf(Array);
-    expect(await reportsContract.getCarReports(0)).to.have.length.lessThanOrEqual(0);
+    const reports = await reportsContract.getReportsForCar(0);
+    expect(reports).to.be.instanceOf(Array);
+    expect(reports).to.have.length.lessThanOrEqual(0);
   });
 
   it('Should return 0 for nonexistent report', async () => {
     await expect(reportsContract.getCreator(0)).revertedWith(IS_EXISTENT_TOKEN);
-  });
-
-  it('Should return 0 since no update', async () => {
-    expect(await reportsContract.lastUpdate()).to.equal(0);
   });
 
   describe('Create report process', function () {
@@ -108,10 +105,19 @@ describe('Reports', function () {
       reportId = await reportsContract.getTokenIds();
       expect(reportId).to.equal(1);
       expect(await reportsContract.getTokenIds()).to.equal(1);
-      expect(await reportsContract.getCreator(reportId)).to.equal(delegated.address);
-      expect(await reportsContract.getCarReports(carId)).to.eql([reportId]);
-      expect(await reportsContract.getReportCar(reportId)).to.equal(carId);
+      expect(await reportsContract.getCreator(reportId)).to.equal(contributor.address);
+      expect(await reportsContract.getReportsForCar(carId)).to.eql([reportId]);
+      expect(await reportsContract.getCarForReport(reportId)).to.equal(carId);
       expect(await reportsContract.tokenURI(reportId)).to.equal(HASH);
+    });
+
+    it('Should change ownerOf reports if Contributor nft is transferred', async () => {
+      await reportsContract.connect(delegated).create(carId, HASH);
+      reportId = await reportsContract.getTokenIds();
+      expect(await reportsContract.getCreator(reportId)).to.equal(contributor.address);
+      // await contributorsContract.approve(delegated.address, reportId);
+      await contributorsContract.connect(contributor)['safeTransferFrom(address,address,uint256)'](contributor.address, delegated.address, reportId);
+      expect(await reportsContract.getCreator(reportId)).to.equal(delegated.address);
     });
 
     it('Should create multiple report', async () => {
@@ -120,7 +126,7 @@ describe('Reports', function () {
         await reportsContract.connect(delegated).create(carId, HASH);
         reportsIds.push(await reportsContract.getTokenIds());
       }
-      expect(await reportsContract.getCarReports(carId)).to.eql(reportsIds);
+      expect(await reportsContract.getReportsForCar(carId)).to.eql(reportsIds);
     });
 
     it('Should not create report since caller is not delegated', async () => {
@@ -141,23 +147,20 @@ describe('Reports', function () {
         await expect(reportsContract.connect(contributor).update(reportId, HASH)).revertedWith(IS_DELEGATED);
       });
 
-      it('Should not update report since creator is not caller', async () => {
-        await contributorsDelegationContract.connect(contributor).delegate(contributorId, contributor.address);
-        await expect(reportsContract.connect(contributor).update(reportId, HASH)).revertedWith(IS_CREATOR);
-      });
-
       it('Should update report', async () => {
         const NEW_HASH = 'NEW_TEST';
-        const lastUpdate = await reportsContract.lastUpdate();
         await reportsContract.connect(delegated).update(reportId, NEW_HASH);
         expect(await reportsContract.tokenURI(reportId)).to.equal(NEW_HASH);
-        expect(Number(await reportsContract.lastUpdate())).to.be.greaterThan(Number(lastUpdate));
       });
 
       describe('Burn process', function () {
-        it('Should not burn report since creator is not caller', async () => {
-          await contributorsDelegationContract.connect(contributor).delegate(contributorId, contributor.address);
-          await expect(reportsContract.connect(contributor).update(reportId, HASH)).revertedWith(IS_CREATOR);
+        it('Should not burn report since caller is not delegated', async () => {
+          await expect(reportsContract.connect(contributor).burn(reportId, 'test')).revertedWith(IS_DELEGATED);
+        });
+
+        it('Should burn the report since caller is delegated', async () => {
+          await reportsContract.connect(delegated).burn(reportId, 'test');
+          await expect(reportsContract.getCreator(reportId)).revertedWith(IS_EXISTENT_TOKEN);
         });
       });
     });

@@ -20,6 +20,7 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 export interface ContributorsDelegationInterface extends utils.Interface {
   contractName: "ContributorsDelegation";
   functions: {
+    "contributors()": FunctionFragment;
     "delegate(uint256,address)": FunctionFragment;
     "isDelegatedOf(address)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -29,6 +30,10 @@ export interface ContributorsDelegationInterface extends utils.Interface {
     "undelegate(uint256,address)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "contributors",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "delegate",
     values: [BigNumberish, string]
@@ -55,6 +60,10 @@ export interface ContributorsDelegationInterface extends utils.Interface {
     values: [BigNumberish, string]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "contributors",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "delegate", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isDelegatedOf",
@@ -136,6 +145,8 @@ export interface ContributorsDelegation extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    contributors(overrides?: CallOverrides): Promise<[string]>;
+
     delegate(
       _contributorId: BigNumberish,
       _delegate: string,
@@ -169,6 +180,8 @@ export interface ContributorsDelegation extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
+
+  contributors(overrides?: CallOverrides): Promise<string>;
 
   delegate(
     _contributorId: BigNumberish,
@@ -204,6 +217,8 @@ export interface ContributorsDelegation extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    contributors(overrides?: CallOverrides): Promise<string>;
+
     delegate(
       _contributorId: BigNumberish,
       _delegate: string,
@@ -239,13 +254,13 @@ export interface ContributorsDelegation extends BaseContract {
   filters: {
     "Delegate(address,address,uint256)"(
       contributor?: null,
-      delegate?: null,
-      contributorId?: null
+      delegate?: string | null,
+      contributorId?: BigNumberish | null
     ): DelegateEventFilter;
     Delegate(
       contributor?: null,
-      delegate?: null,
-      contributorId?: null
+      delegate?: string | null,
+      contributorId?: BigNumberish | null
     ): DelegateEventFilter;
 
     "OwnershipTransferred(address,address)"(
@@ -265,6 +280,8 @@ export interface ContributorsDelegation extends BaseContract {
   };
 
   estimateGas: {
+    contributors(overrides?: CallOverrides): Promise<BigNumber>;
+
     delegate(
       _contributorId: BigNumberish,
       _delegate: string,
@@ -300,6 +317,8 @@ export interface ContributorsDelegation extends BaseContract {
   };
 
   populateTransaction: {
+    contributors(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     delegate(
       _contributorId: BigNumberish,
       _delegate: string,

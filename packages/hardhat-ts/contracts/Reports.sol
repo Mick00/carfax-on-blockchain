@@ -5,87 +5,84 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
-
-interface IContributorsDelegation {
-  function isDelegatedOf(address _delegated) external view returns (uint256);
-}
-
-interface ICars {
-  function ownerOf(uint256 tokenId) external view returns (address owner);
-}
+import "./Cars.sol";
+import "./ContributorsDelegation.sol";
+import "./Contributors.sol";
 
 contract Reports is ERC721URIStorage, Ownable {
   using Address for address;
 
   uint256 private tokenIds;
 
-  uint256 private lastBlock;
+  mapping(uint256 => uint256) public reportIdToCarId;
+  mapping(uint256 => uint256) public reportIdToContributorId;
+  mapping(uint256 => uint256[]) public carIdtoReportsId;
 
-  mapping(uint256 => uint256) private reportIdToCarId;
-  mapping(uint256 => uint256[]) private carIdtoReportsId;
+  ContributorsDelegation public contributorsDelegation;
+  Contributors public contributors;
+  Cars private cars;
 
-  IContributorsDelegation private contributors;
-  ICars private cars;
+  event ReportCreated(uint256 indexed car, uint256 indexed report, address delegated, uint256 indexed contributorId);
+  event ReportUpdated(address delegated, uint256 indexed report);
+  event ReportDeleted(address delegated, uint256 indexed report, string reason);
 
-  event ReportCreated(uint256 car, address delegated, uint256 report);
-  event ReportUpdated(address delegated, uint256 report);
-  event ReportDeleted(address delegated, uint256 report, string reason);
+  constructor(address _contributorsDelegation, address _cars) ERC721("CarFaxReports", "CFR") {
+    contributorsDelegation = ContributorsDelegation(_contributorsDelegation);
+    contributors = contributorsDelegation.contributors();
 
-  constructor(address _contributors, address _cars) ERC721("CarFaxReports", "CFR") {
-    contributors = IContributorsDelegation(_contributors);
-    cars = ICars(_cars);
+    cars = Cars(_cars);
   }
 
   function create(uint256 _carId, string memory _reportHash) external returns (uint256) {
-    require(contributors.isDelegatedOf(msg.sender) != 0, "Caller must be a delegated.");
+    uint256 contributorId = contributorsDelegation.isDelegatedOf(msg.sender);
+    require(contributorId != 0, "Caller must be a delegated.");
     require(cars.ownerOf(_carId) != address(0), "Car must be existing.");
 
     tokenIds++;
-    super._mint(msg.sender, tokenIds);
+    super._mint(contributors.ownerOf(contributorId), tokenIds);
     super._setTokenURI(tokenIds, _reportHash);
 
     reportIdToCarId[tokenIds] = _carId;
+    reportIdToContributorId[tokenIds] = contributorId;
     carIdtoReportsId[_carId].push(tokenIds);
 
-    emit ReportCreated(_carId, msg.sender, tokenIds);
+    emit ReportCreated(_carId, tokenIds, msg.sender, contributorId);
 
     return tokenIds;
   }
 
-  function update(uint256 _reportId, string memory _reportHash) external {
-    require(contributors.isDelegatedOf(msg.sender) != 0, "Caller must be a delegated.");
-    require(ownerOf(_reportId) == msg.sender, "Caller must be creator.");
+  modifier onlyReportContributor(uint256 _reportId) {
+    require(contributorsDelegation.isDelegatedOf(msg.sender) == reportIdToContributorId[_reportId], "Caller must be a delegated.");
+    _;
+  }
 
+  function update(uint256 _reportId, string memory _reportHash) external onlyReportContributor(_reportId) {
     super._setTokenURI(_reportId, _reportHash);
-
-    lastBlock = block.number;
-
     emit ReportUpdated(msg.sender, _reportId);
   }
 
-  function burn(uint256 _reportId, string memory _reason) external {
-    // require msg.sender to be creator or contributors in case creator lose key.
-    require(ownerOf(_reportId) == msg.sender, "Caller must be creator.");
-
+  function burn(uint256 _reportId, string memory _reason) external onlyReportContributor(_reportId) {
+    delete reportIdToContributorId[_reportId];
     super._burn(_reportId);
-
     emit ReportDeleted(msg.sender, _reportId, _reason);
-  }
-
-  function lastUpdate() external view returns (uint256) {
-    return lastBlock;
   }
 
   function getCreator(uint256 _reportId) external view returns (address) {
     return ownerOf(_reportId);
   }
 
-  function getCarReports(uint256 _carId) external view returns (uint256[] memory) {
+  function getReportsForCar(uint256 _carId) external view returns (uint256[] memory) {
     return carIdtoReportsId[_carId];
   }
 
-  function getReportCar(uint256 _reportId) external view returns (uint256) {
+  function getCarForReport(uint256 _reportId) external view returns (uint256) {
     return reportIdToCarId[_reportId];
+  }
+
+  function ownerOf(uint256 tokenId) public view virtual override returns (address) {
+    uint256 contributorId = reportIdToContributorId[tokenId];
+    require(contributorId != 0, "ERC721: owner query for nonexistent token");
+    return contributors.ownerOf(contributorId);
   }
 
   //Gas : 0
@@ -94,10 +91,10 @@ contract Reports is ERC721URIStorage, Ownable {
   }
 
   function setContributors(address _contributors) external onlyOwner {
-    contributors = IContributorsDelegation(_contributors);
+    contributorsDelegation = ContributorsDelegation(_contributors);
   }
 
   function setCars(address _cars) external onlyOwner {
-    cars = ICars(_cars);
+    cars = Cars(_cars);
   }
 }

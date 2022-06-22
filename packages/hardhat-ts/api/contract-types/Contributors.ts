@@ -637,12 +637,12 @@ export interface Contributors extends BaseContract {
     ): ApprovalForAllEventFilter;
 
     "ConfirmedRegistration(address,uint256)"(
-      contributor?: null,
-      tokenId?: null
+      contributor?: string | null,
+      tokenId?: BigNumberish | null
     ): ConfirmedRegistrationEventFilter;
     ConfirmedRegistration(
-      contributor?: null,
-      tokenId?: null
+      contributor?: string | null,
+      tokenId?: BigNumberish | null
     ): ConfirmedRegistrationEventFilter;
 
     "OwnershipTransferred(address,address)"(
@@ -656,22 +656,22 @@ export interface Contributors extends BaseContract {
 
     "Registered(string,address,address)"(
       contributorHash?: null,
-      contributor?: null,
-      registrar?: null
+      contributor?: string | null,
+      registrar?: string | null
     ): RegisteredEventFilter;
     Registered(
       contributorHash?: null,
-      contributor?: null,
-      registrar?: null
+      contributor?: string | null,
+      registrar?: string | null
     ): RegisteredEventFilter;
 
     "RemovedRegistrator(address,uint256)"(
-      registrator?: null,
-      tokenId?: null
+      registrator?: string | null,
+      tokenId?: BigNumberish | null
     ): RemovedRegistratorEventFilter;
     RemovedRegistrator(
-      registrator?: null,
-      tokenId?: null
+      registrator?: string | null,
+      tokenId?: BigNumberish | null
     ): RemovedRegistratorEventFilter;
 
     "Transfer(address,address,uint256)"(

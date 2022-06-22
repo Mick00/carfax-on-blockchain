@@ -23,18 +23,22 @@ export interface ReportsInterface extends utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "burn(uint256,string)": FunctionFragment;
+    "carIdtoReportsId(uint256,uint256)": FunctionFragment;
+    "contributors()": FunctionFragment;
+    "contributorsDelegation()": FunctionFragment;
     "create(uint256,string)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
-    "getCarReports(uint256)": FunctionFragment;
+    "getCarForReport(uint256)": FunctionFragment;
     "getCreator(uint256)": FunctionFragment;
-    "getReportCar(uint256)": FunctionFragment;
+    "getReportsForCar(uint256)": FunctionFragment;
     "getTokenIds()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "lastUpdate()": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
+    "reportIdToCarId(uint256)": FunctionFragment;
+    "reportIdToContributorId(uint256)": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setCars(address)": FunctionFragment;
@@ -57,6 +61,18 @@ export interface ReportsInterface extends utils.Interface {
     values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
+    functionFragment: "carIdtoReportsId",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "contributors",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "contributorsDelegation",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "create",
     values: [BigNumberish, string]
   ): string;
@@ -65,7 +81,7 @@ export interface ReportsInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "getCarReports",
+    functionFragment: "getCarForReport",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -73,7 +89,7 @@ export interface ReportsInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "getReportCar",
+    functionFragment: "getReportsForCar",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -84,10 +100,6 @@ export interface ReportsInterface extends utils.Interface {
     functionFragment: "isApprovedForAll",
     values: [string, string]
   ): string;
-  encodeFunctionData(
-    functionFragment: "lastUpdate",
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -97,6 +109,14 @@ export interface ReportsInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "reportIdToCarId",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "reportIdToContributorId",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "safeTransferFrom",
@@ -136,18 +156,30 @@ export interface ReportsInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "carIdtoReportsId",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "contributors",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "contributorsDelegation",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "create", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getCarReports",
+    functionFragment: "getCarForReport",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getCreator", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "getReportCar",
+    functionFragment: "getReportsForCar",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -158,12 +190,19 @@ export interface ReportsInterface extends utils.Interface {
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "lastUpdate", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "reportIdToCarId",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "reportIdToContributorId",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -199,7 +238,7 @@ export interface ReportsInterface extends utils.Interface {
     "Approval(address,address,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
-    "ReportCreated(uint256,address,uint256)": EventFragment;
+    "ReportCreated(uint256,uint256,address,uint256)": EventFragment;
     "ReportDeleted(address,uint256,string)": EventFragment;
     "ReportUpdated(address,uint256)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
@@ -237,8 +276,13 @@ export type OwnershipTransferredEventFilter =
   TypedEventFilter<OwnershipTransferredEvent>;
 
 export type ReportCreatedEvent = TypedEvent<
-  [BigNumber, string, BigNumber],
-  { car: BigNumber; delegated: string; report: BigNumber }
+  [BigNumber, BigNumber, string, BigNumber],
+  {
+    car: BigNumber;
+    report: BigNumber;
+    delegated: string;
+    contributorId: BigNumber;
+  }
 >;
 
 export type ReportCreatedEventFilter = TypedEventFilter<ReportCreatedEvent>;
@@ -306,6 +350,16 @@ export interface Reports extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    carIdtoReportsId(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    contributors(overrides?: CallOverrides): Promise<[string]>;
+
+    contributorsDelegation(overrides?: CallOverrides): Promise<[string]>;
+
     create(
       _carId: BigNumberish,
       _reportHash: string,
@@ -317,20 +371,20 @@ export interface Reports extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    getCarReports(
-      _carId: BigNumberish,
+    getCarForReport(
+      _reportId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber[]]>;
+    ): Promise<[BigNumber]>;
 
     getCreator(
       _reportId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    getReportCar(
-      _reportId: BigNumberish,
+    getReportsForCar(
+      _carId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<[BigNumber[]]>;
 
     getTokenIds(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -339,8 +393,6 @@ export interface Reports extends BaseContract {
       operator: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
-
-    lastUpdate(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
@@ -354,6 +406,16 @@ export interface Reports extends BaseContract {
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    reportIdToCarId(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    reportIdToContributorId(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -431,6 +493,16 @@ export interface Reports extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  carIdtoReportsId(
+    arg0: BigNumberish,
+    arg1: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  contributors(overrides?: CallOverrides): Promise<string>;
+
+  contributorsDelegation(overrides?: CallOverrides): Promise<string>;
+
   create(
     _carId: BigNumberish,
     _reportHash: string,
@@ -442,20 +514,20 @@ export interface Reports extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  getCarReports(
-    _carId: BigNumberish,
+  getCarForReport(
+    _reportId: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<BigNumber[]>;
+  ): Promise<BigNumber>;
 
   getCreator(
     _reportId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
 
-  getReportCar(
-    _reportId: BigNumberish,
+  getReportsForCar(
+    _carId: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  ): Promise<BigNumber[]>;
 
   getTokenIds(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -464,8 +536,6 @@ export interface Reports extends BaseContract {
     operator: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
-
-  lastUpdate(overrides?: CallOverrides): Promise<BigNumber>;
 
   name(overrides?: CallOverrides): Promise<string>;
 
@@ -476,6 +546,16 @@ export interface Reports extends BaseContract {
   renounceOwnership(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  reportIdToCarId(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  reportIdToContributorId(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   "safeTransferFrom(address,address,uint256)"(
     from: string,
@@ -550,6 +630,16 @@ export interface Reports extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    carIdtoReportsId(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    contributors(overrides?: CallOverrides): Promise<string>;
+
+    contributorsDelegation(overrides?: CallOverrides): Promise<string>;
+
     create(
       _carId: BigNumberish,
       _reportHash: string,
@@ -561,20 +651,20 @@ export interface Reports extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    getCarReports(
-      _carId: BigNumberish,
+    getCarForReport(
+      _reportId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<BigNumber[]>;
+    ): Promise<BigNumber>;
 
     getCreator(
       _reportId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    getReportCar(
-      _reportId: BigNumberish,
+    getReportsForCar(
+      _carId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber[]>;
 
     getTokenIds(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -584,8 +674,6 @@ export interface Reports extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    lastUpdate(overrides?: CallOverrides): Promise<BigNumber>;
-
     name(overrides?: CallOverrides): Promise<string>;
 
     owner(overrides?: CallOverrides): Promise<string>;
@@ -593,6 +681,16 @@ export interface Reports extends BaseContract {
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
+    reportIdToCarId(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    reportIdToContributorId(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -682,33 +780,38 @@ export interface Reports extends BaseContract {
       newOwner?: string | null
     ): OwnershipTransferredEventFilter;
 
-    "ReportCreated(uint256,address,uint256)"(
-      car?: null,
+    "ReportCreated(uint256,uint256,address,uint256)"(
+      car?: BigNumberish | null,
+      report?: BigNumberish | null,
       delegated?: null,
-      report?: null
+      contributorId?: BigNumberish | null
     ): ReportCreatedEventFilter;
     ReportCreated(
-      car?: null,
+      car?: BigNumberish | null,
+      report?: BigNumberish | null,
       delegated?: null,
-      report?: null
+      contributorId?: BigNumberish | null
     ): ReportCreatedEventFilter;
 
     "ReportDeleted(address,uint256,string)"(
       delegated?: null,
-      report?: null,
+      report?: BigNumberish | null,
       reason?: null
     ): ReportDeletedEventFilter;
     ReportDeleted(
       delegated?: null,
-      report?: null,
+      report?: BigNumberish | null,
       reason?: null
     ): ReportDeletedEventFilter;
 
     "ReportUpdated(address,uint256)"(
       delegated?: null,
-      report?: null
+      report?: BigNumberish | null
     ): ReportUpdatedEventFilter;
-    ReportUpdated(delegated?: null, report?: null): ReportUpdatedEventFilter;
+    ReportUpdated(
+      delegated?: null,
+      report?: BigNumberish | null
+    ): ReportUpdatedEventFilter;
 
     "Transfer(address,address,uint256)"(
       from?: string | null,
@@ -737,6 +840,16 @@ export interface Reports extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    carIdtoReportsId(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    contributors(overrides?: CallOverrides): Promise<BigNumber>;
+
+    contributorsDelegation(overrides?: CallOverrides): Promise<BigNumber>;
+
     create(
       _carId: BigNumberish,
       _reportHash: string,
@@ -748,8 +861,8 @@ export interface Reports extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getCarReports(
-      _carId: BigNumberish,
+    getCarForReport(
+      _reportId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -758,8 +871,8 @@ export interface Reports extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getReportCar(
-      _reportId: BigNumberish,
+    getReportsForCar(
+      _carId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -770,8 +883,6 @@ export interface Reports extends BaseContract {
       operator: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    lastUpdate(overrides?: CallOverrides): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -784,6 +895,16 @@ export interface Reports extends BaseContract {
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    reportIdToCarId(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    reportIdToContributorId(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     "safeTransferFrom(address,address,uint256)"(
@@ -866,6 +987,18 @@ export interface Reports extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    carIdtoReportsId(
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    contributors(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    contributorsDelegation(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     create(
       _carId: BigNumberish,
       _reportHash: string,
@@ -877,8 +1010,8 @@ export interface Reports extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getCarReports(
-      _carId: BigNumberish,
+    getCarForReport(
+      _reportId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -887,8 +1020,8 @@ export interface Reports extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getReportCar(
-      _reportId: BigNumberish,
+    getReportsForCar(
+      _carId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -899,8 +1032,6 @@ export interface Reports extends BaseContract {
       operator: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    lastUpdate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -913,6 +1044,16 @@ export interface Reports extends BaseContract {
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    reportIdToCarId(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    reportIdToContributorId(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     "safeTransferFrom(address,address,uint256)"(

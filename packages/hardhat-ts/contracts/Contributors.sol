@@ -16,9 +16,9 @@ contract Contributors is ERC721URIStorage, Ownable {
   uint256 private tokenIds;
 
   //Events
-  event Registered(string contributorHash, address contributor, address registrar);
-  event ConfirmedRegistration(address contributor, uint256 tokenId);
-  event RemovedRegistrator(address registrator, uint256 tokenId);
+  event Registered(string contributorHash, address indexed contributor, address indexed registrar);
+  event ConfirmedRegistration(address indexed contributor, uint256 indexed tokenId);
+  event RemovedRegistrator(address indexed registrator, uint256 indexed tokenId);
 
   modifier isRegistrar() {
     require(registrars[msg.sender], "Caller is not a registrar");
