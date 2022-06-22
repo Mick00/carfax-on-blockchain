@@ -2,6 +2,9 @@ import { DeployFunction } from 'hardhat-deploy/types';
 import { silent } from 'helpers/logging';
 import { THardhatRuntimeEnvironmentExtended } from 'helpers/types/THardhatRuntimeEnvironmentExtended';
 
+import { CONTRIBUTORSDELEGATION_DEPLOYMENT } from './01_ContributorsDelegation';
+import { CARS_DEPLOYMENT } from './02_Cars';
+
 export const REPORTS_DEPLOYMENT = 'Reports';
 
 const deployReports: DeployFunction = async (hre: THardhatRuntimeEnvironmentExtended) => {
@@ -20,3 +23,4 @@ const deployReports: DeployFunction = async (hre: THardhatRuntimeEnvironmentExte
 };
 export default deployReports;
 deployReports.tags = [REPORTS_DEPLOYMENT];
+deployReports.dependencies = [CONTRIBUTORSDELEGATION_DEPLOYMENT, CARS_DEPLOYMENT];

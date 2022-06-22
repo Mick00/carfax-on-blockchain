@@ -10,7 +10,7 @@
     "test": "yarn hardhat test --network hardhat",
     "compile": "cross-env BUILDING=true hardhat compile",
     "compile:package": "tsc --project tsconfig.package.json",
-    "deploy": "cross-env BUILDING=true yarn hardhat deploy --export-all ./api/contracts.json && yarn deploy:package",
+    "deploy": "cross-env BUILDING=true yarn hardhat deploy --export-all ./api/contracts.json && yarn compile:package",
     "clean": "cross-env BUILDING=true hardhat clean",
     "watch:compile": "yarn hardhat watch compile",
     "accounts": "hardhat accounts",
