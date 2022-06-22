@@ -2,6 +2,8 @@ import { DeployFunction } from 'hardhat-deploy/types';
 import { silent } from 'helpers/logging';
 import { THardhatRuntimeEnvironmentExtended } from 'helpers/types/THardhatRuntimeEnvironmentExtended';
 
+import { CONTRIBUTORS_DEPLOYMENT } from './00_Contributors';
+
 export const CONTRIBUTORSDELEGATION_DEPLOYMENT = 'ContributorsDelegation';
 
 const deployContributorsDelegation: DeployFunction = async (hre: THardhatRuntimeEnvironmentExtended) => {
@@ -19,3 +21,4 @@ const deployContributorsDelegation: DeployFunction = async (hre: THardhatRuntime
 };
 export default deployContributorsDelegation;
 deployContributorsDelegation.tags = [CONTRIBUTORSDELEGATION_DEPLOYMENT];
+deployContributorsDelegation.dependencies = [CONTRIBUTORS_DEPLOYMENT];

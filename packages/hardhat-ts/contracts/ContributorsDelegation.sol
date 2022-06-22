@@ -3,22 +3,17 @@ pragma solidity 0.8.14;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
-
-interface IContributors {
-  function balanceOf(address owner) external returns (uint256);
-
-  function ownerOf(uint256 tokenId) external returns (address);
-}
+import "./Contributors.sol";
 
 //Each Registrar got their own contract
 contract ContributorsDelegation is Ownable {
   using Address for address;
 
-  IContributors private contributors;
+  Contributors public contributors;
 
   mapping(address => uint256) private delegateToContributor;
 
-  event Delegate(address contributor, address delegate, uint256 contributorId);
+  event Delegate(address contributor, address indexed delegate, uint256 indexed contributorId);
   event Undelegate(address delegate, uint256 contributorId);
 
   modifier isContributor(uint256 _contributorId) {
@@ -27,8 +22,8 @@ contract ContributorsDelegation is Ownable {
   }
 
   //Gas : 890564
-  constructor(address _contributors) {
-    contributors = IContributors(_contributors);
+  constructor(address _contributorsContract) {
+    contributors = Contributors(_contributorsContract);
   }
 
   //Gas : 56641
@@ -52,6 +47,6 @@ contract ContributorsDelegation is Ownable {
   //Gas : 29183
   function setContributorsContract(address _contributors) external onlyOwner {
     require(_contributors.isContract(), "Contributors must be a valid contract");
-    contributors = IContributors(_contributors);
+    contributors = Contributors(_contributors);
   }
 }
