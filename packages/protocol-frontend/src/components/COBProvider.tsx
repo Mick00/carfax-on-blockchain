@@ -2,12 +2,14 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { Cars, ContractProvider, Contributors, ContributorsDelegation, Reports } from "@cob/contracts";
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
-
+import { JsonRpcProvider } from "@ethersproject/providers";
 interface ICOBApi {
   contributors(): Contributors,
   contributorDelegation(): ContributorsDelegation,
   cars(): Cars,
-  reports(): Reports
+  reports(): Reports,
+  canRead: boolean,
+  canWrite: boolean
 }
 
 const COBContext = createContext<ICOBApi>({
@@ -23,21 +25,30 @@ const COBContext = createContext<ICOBApi>({
   reports(): Reports {
     throw new Error("No contract provider")
   },
+  canRead: false,
+  canWrite: false,
 })
 
 export default function COBProvider(props: React.PropsWithChildren) {
 
-  const { chainId, connector } = useWeb3React();
-  const [contracts, setContracts] = useState<ContractProvider|null>(null)
+  const { chainId, connector, account, isActive } = useWeb3React();
+  const defaultRPC = new JsonRpcProvider(process.env.REACT_APP_RPC_URL, 5)
+  const [contracts, setContracts] = useState<ContractProvider>(new ContractProvider(defaultRPC, 5))
+  const [canWrite, setCanWrite] = useState(false);
+  const [canRead, setCanRead] = useState(true);
 
   useEffect(() => {
-    if (connector.provider && chainId){
+    if (isActive && connector.provider && chainId){
       const provider = new ethers.providers.Web3Provider(connector.provider)
-      setContracts(new ContractProvider(provider, chainId))
+      setContracts(new ContractProvider(provider.getSigner(account) as unknown as JsonRpcProvider, chainId))
+      setCanRead(true);
+      setCanWrite(true);
     } else {
-      setContracts(null)
+      setContracts(new ContractProvider(new JsonRpcProvider(process.env.REACT_APP_RPC_URL), "5"))
+      setCanRead(true);
+      setCanWrite(false);
     }
-  }, [chainId])
+  }, [account, chainId, connector.provider, isActive])
 
   const getContracts = () => {
     if (!contracts){
@@ -59,7 +70,9 @@ export default function COBProvider(props: React.PropsWithChildren) {
       contributors,
       contributorDelegation,
       cars,
-      reports
+      reports,
+      canRead,
+      canWrite
     }}>
           {props.children}
     </COBContext.Provider>

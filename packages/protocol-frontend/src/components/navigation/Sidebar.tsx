@@ -25,7 +25,15 @@ export const menuItems: SidebarLink[] = [
         <ListItemIcon>
           <InboxIcon />
         </ListItemIcon>)
-    }
+    },
+  {
+    label: "Registrars",
+    destination: "/registrars",
+    icon: () => (
+      <ListItemIcon>
+        <InboxIcon />
+      </ListItemIcon>)
+  },
 ]
 
 function Sidebar() {
