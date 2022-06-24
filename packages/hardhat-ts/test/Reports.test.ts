@@ -58,7 +58,7 @@ describe('Reports', function () {
   });
 
   it('Should let only owner set contributors', async () => {
-    await expect(reportsContract.connect(contributor).setContributors(contributorsDelegationContract.address)).revertedWith(ONLY_OWNER);
+    await expect(reportsContract.connect(contributor).setContributorsDelegation(contributorsDelegationContract.address)).revertedWith(ONLY_OWNER);
   });
 
   it('Should let only owner set cars', async () => {

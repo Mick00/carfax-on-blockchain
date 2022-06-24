@@ -7,8 +7,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Contributors is ERC721URIStorage, Ownable {
   //registrar => contributor => ipfshash
-  mapping(address => mapping(address => string)) private waitingForConfirmation;
-  mapping(uint256 => address) private tokenToContributor;
+  mapping(address => mapping(address => string)) public waitingForConfirmation;
+    mapping(uint => address) contributorRegistrar;
 
   mapping(address => bool) public registrars;
 
@@ -18,7 +18,9 @@ contract Contributors is ERC721URIStorage, Ownable {
   //Events
   event Registered(string contributorHash, address indexed contributor, address indexed registrar);
   event ConfirmedRegistration(address indexed contributor, uint256 indexed tokenId);
-  event RemovedRegistrator(address indexed registrator, uint256 indexed tokenId);
+  event RemovedContributor(address indexed registrator, uint256 indexed tokenId);
+  event AddedRegistrar(address indexed registrar);
+  event RemovedRegistrar(address indexed registrar);
 
   modifier isRegistrar() {
     require(registrars[msg.sender], "Caller is not a registrar");
@@ -45,10 +47,9 @@ contract Contributors is ERC721URIStorage, Ownable {
     require(!_isHashEmpty(ipfsHash), "Confirmation does not exist.");
 
     tokenIds++;
-    tokenToContributor[tokenIds] = contributor;
     super._mint(contributor, tokenIds);
     super._setTokenURI(tokenIds, ipfsHash);
-
+    contributorRegistrar[tokenIds] = _registrarAddress;
     delete waitingForConfirmation[_registrarAddress][contributor];
 
     emit ConfirmedRegistration(contributor, tokenIds);
@@ -72,15 +73,17 @@ contract Contributors is ERC721URIStorage, Ownable {
   function removeContributor(uint256 _tokenId) external onlyOwner {
     address registrator = super.ownerOf(_tokenId);
     super._burn(_tokenId);
-    emit RemovedRegistrator(registrator, _tokenId);
+    emit RemovedContributor(registrator, _tokenId);
   }
 
   function addRegistrar(address _registrar) external onlyOwner {
     registrars[_registrar] = true;
+      emit AddedRegistrar(_registrar);
   }
 
   function removeRegistrar(address _registrar) external onlyOwner {
     delete registrars[_registrar];
+      emit RemovedRegistrar(_registrar);
   }
 
   function _isHashEmpty(string memory hash) private pure returns (bool) {

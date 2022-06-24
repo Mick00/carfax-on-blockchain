@@ -20,7 +20,7 @@ contract Reports is ERC721URIStorage, Ownable {
 
   ContributorsDelegation public contributorsDelegation;
   Contributors public contributors;
-  Cars private cars;
+  Cars public cars;
 
   event ReportCreated(uint256 indexed car, uint256 indexed report, address delegated, uint256 indexed contributorId);
   event ReportUpdated(address delegated, uint256 indexed report);
@@ -90,9 +90,13 @@ contract Reports is ERC721URIStorage, Ownable {
     return tokenIds;
   }
 
-  function setContributors(address _contributors) external onlyOwner {
-    contributorsDelegation = ContributorsDelegation(_contributors);
+  function setContributorsDelegation(address _contributorsDeleg) external onlyOwner {
+    contributorsDelegation = ContributorsDelegation(_contributorsDeleg);
   }
+
+function setContributorsContract(address _contributorsContract) external onlyOwner {
+    contributors = Contributors(_contributorsContract);
+}
 
   function setCars(address _cars) external onlyOwner {
     cars = Cars(_cars);

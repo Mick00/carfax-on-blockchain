@@ -37,6 +37,12 @@ task('balance', "Prints an account's balance")
     console.log(formatUnits(balance, 'ether'), 'ETH');
   });
 
+task('secret', 'Prints secret key from mnemonic').setAction(async (taskArgs: { account: string }, hre: THardhatRuntimeEnvironmentExtended) => {
+  const mnemonic = getMnemonic();
+  const wallet = hre.ethers.Wallet.fromMnemonic(mnemonic);
+  console.log('Secret key:', wallet.privateKey);
+});
+
 task('accounts', 'Prints the list of accounts', async (_, { ethers }) => {
   const accounts = await ethers.provider.listAccounts();
   accounts.forEach((account: any) => console.log(account));
