@@ -20,9 +20,9 @@ const Menuitems = [
       href: "/search",
     },
     {
-      title: 'Registrer',
+      title: 'Register',
       icon: <AppRegistrationIcon width="20" height="20" style={{color:'#000000'}}/>,
-      href: "/registrer"
+      href: "/register"
     }
   ];
   
