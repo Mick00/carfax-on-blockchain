@@ -24,6 +24,7 @@ const ProfileDD = (props): JSX.Element => {
   const handleClose4 = () => {
     setAnchorEl4(null);
   };
+
   return (
     <>
       <Button
@@ -107,7 +108,7 @@ const ProfileDD = (props): JSX.Element => {
           <Divider />
           <Box p={2}>
             <Link>
-              <Button fullWidth variant="contained" color="primary">
+              <Button fullWidth variant="contained"  onClick={props.logout} color="primary">
                 Logout
               </Button>
             </Link>

@@ -69,6 +69,13 @@ const Header = (props: IHeaderProps): JSX.Element => {
     }
 
   }
+
+  const signout = async () => {
+    console.log("this was clicked");
+    setWalletAddress('');
+    
+  }
+  
   return (
     <AppBar sx={props.sx} position={props.position} elevation={0} className={props.customClass}>
       <Toolbar>
@@ -95,7 +102,7 @@ const Header = (props: IHeaderProps): JSX.Element => {
         <Box flexGrow={1} />
 
         {walletAddress !== '' ?
-        <Profile address={walletAddress}/>
+        <Profile address={walletAddress} logout={signout}/>
         :
         <Button variant="contained" onClick={login} color="primary">
                 Login
