@@ -5,8 +5,8 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Cars is Ownable, ERC721URIStorage {
-  mapping(string => uint256) private serialNumberToCar;
-  mapping(uint256 => uint256) private carToOdometer;
+  mapping(string => uint256) public serialNumberToCar;
+  mapping(uint256 => uint256) public carToOdometer;
 
   uint256 private tokenIds;
 
@@ -47,5 +47,9 @@ contract Cars is Ownable, ERC721URIStorage {
 
   function getOdometerFromSerialNumber(string memory _serialNumber) external view returns (uint256) {
     return carToOdometer[serialNumberToCar[_serialNumber]];
+  }
+
+  function getTokenURIFromSerialNumber(string memory _serialNumber) external view returns (string memory) {
+      return tokenURI(serialNumberToCar[_serialNumber]);
   }
 }

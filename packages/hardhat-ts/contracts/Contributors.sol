@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract Contributors is ERC721URIStorage, Ownable {
   //registrar => contributor => ipfshash
   mapping(address => mapping(address => string)) public waitingForConfirmation;
-    mapping(uint => address) contributorRegistrar;
+  mapping(uint => address) public contributorRegistrar;
 
   mapping(address => bool) public registrars;
 
@@ -33,7 +33,6 @@ contract Contributors is ERC721URIStorage, Ownable {
   //Gas without registrar validation : 48671
   function register(string memory _contributorHash, address _contributor) external isRegistrar {
     address registrar = msg.sender;
-
     waitingForConfirmation[registrar][_contributor] = _contributorHash;
 
     emit Registered(_contributorHash, _contributor, registrar);
