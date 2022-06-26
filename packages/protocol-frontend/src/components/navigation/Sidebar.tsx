@@ -2,6 +2,10 @@ import { Box, Link, List, ListItem, ListItemButton, ListItemIcon, ListItemText }
 import InboxIcon from '@mui/icons-material/Inbox';
 import React from "react";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import PersonIcon from '@mui/icons-material/Person';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import TimeToLeaveIcon from '@mui/icons-material/TimeToLeave';
 
 interface SidebarLink {
     label: string,
@@ -15,7 +19,7 @@ export const menuItems: SidebarLink[] = [
         destination: "/",
         icon: () => (
             <ListItemIcon>
-                <InboxIcon />
+                <InsertDriveFileIcon />
             </ListItemIcon>)
     },
     {
@@ -23,9 +27,25 @@ export const menuItems: SidebarLink[] = [
       destination: "/contributors",
       icon: () => (
         <ListItemIcon>
-          <InboxIcon />
+          <PersonIcon />
         </ListItemIcon>)
-    }
+    },
+  {
+    label: "Cars",
+    destination: "/cars",
+    icon: () => (
+      <ListItemIcon>
+        <TimeToLeaveIcon />
+      </ListItemIcon>)
+  },
+  {
+    label: "Registrars",
+    destination: "/registrars",
+    icon: () => (
+      <ListItemIcon>
+        <VerifiedUserIcon />
+      </ListItemIcon>)
+  },
 ]
 
 function Sidebar() {

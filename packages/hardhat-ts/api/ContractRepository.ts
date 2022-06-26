@@ -1,36 +1,28 @@
-import {
-  Cars__factory,
-  Contributors__factory,
-  ContributorsDelegation__factory,
-  Reports__factory
-} from "./contract-types";
-import { JsonRpcProvider } from "@ethersproject/providers";
-import contractsExport from "./contracts.json";
-import { ContractExport, Export, MultiExport } from "hardhat-deploy/dist/types";
+import { JsonRpcProvider } from '@ethersproject/providers';
+import { MultiExport } from 'hardhat-deploy/dist/types';
+
+import { Cars__factory, Contributors__factory, ContributorsDelegation__factory, Reports__factory } from './contract-types';
+import contractsExport from './contracts.json';
 
 const contracts = contractsExport as MultiExport;
 
-const contractsFactoriesMap = {
+export const contractsFactoriesMap = {
   Contributors: Contributors__factory,
   Cars: Cars__factory,
   Reports: Reports__factory,
-  ContributorsDelegation: ContributorsDelegation__factory
+  ContributorsDelegation: ContributorsDelegation__factory,
 } as const;
 
 export class ContractProvider {
-  constructor(
-    private provider: JsonRpcProvider,
-    private network: keyof typeof contracts,
-    ) {
+  constructor(private readonly provider: JsonRpcProvider, private readonly network: keyof typeof contracts) {}
+
+  getExport(contractName: keyof typeof contractsFactoriesMap) {
+    const protocol = contracts[this.network][0];
+    return protocol.contracts[contractName];
   }
 
-  getExport(contractName: keyof typeof contractsFactoriesMap){
-    const protocol = contracts[this.network][0] as Export;
-    return protocol.contracts[contractName] as ContractExport;
-  }
-
-  get(contractName: keyof typeof contractsFactoriesMap) {
+  get<T extends keyof typeof contractsFactoriesMap>(contractName: T): ReturnType<typeof contractsFactoriesMap[T]['connect']> {
     const contractExport = this.getExport(contractName);
-    return contractsFactoriesMap[contractName].connect(contractExport.address, this.provider);
+    return contractsFactoriesMap[contractName].connect(contractExport.address, this.provider) as ReturnType<typeof contractsFactoriesMap[T]['connect']>;
   }
 }

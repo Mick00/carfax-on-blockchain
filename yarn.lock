@@ -20920,6 +20920,8 @@ __metadata:
     ethers: ^5.6.8
     react: ^18.1.0
     react-dom: ^18.1.0
+    react-hook-form: ^7.32.2
+    react-query: ^3.39.1
     react-router-dom: 6
     react-scripts: 5.0.1
     typescript: ^4.7.3
@@ -21262,6 +21264,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-hook-form@npm:^7.32.2":
+  version: 7.32.2
+  resolution: "react-hook-form@npm:7.32.2"
+  peerDependencies:
+    react: ^16.8.0 || ^17 || ^18
+  checksum: abe8ba146c313d206f99a01260457bc72af03b2c73d7bd4be5af11598140ec45ef1ef37bac64b80c4dbc298d6aa21af4caa259a133f305a04ddf583faa18e7d0
+  languageName: node
+  linkType: hard
+
 "react-is@npm:^16.13.1, react-is@npm:^16.7.0":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
@@ -21307,6 +21318,24 @@ __metadata:
     react-native:
       optional: true
   checksum: 2edb95dbc0184aa1858e7a47161372c871d0077583e439cfce4473231f426a222990ad313ad1eaf6fca1025e502d006f4f92008b346a83900be148a7e3ededc2
+  languageName: node
+  linkType: hard
+
+"react-query@npm:^3.39.1":
+  version: 3.39.1
+  resolution: "react-query@npm:3.39.1"
+  dependencies:
+    "@babel/runtime": ^7.5.5
+    broadcast-channel: ^3.4.1
+    match-sorter: ^6.0.2
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+    react-native:
+      optional: true
+  checksum: 9273b7c2adf4a78152d3c0b0ac44cfabacc867d5e8e4ad66e6aaccd8a2bd10c5a836c4d3b462e5f083f273998e1c3dd01ed5d126b7508bcfd615eb5aba419b3b
   languageName: node
   linkType: hard
 
