@@ -50,6 +50,7 @@ export default function RegistrarPane() {
       <Box py={4}>
         <Typography variant={"h3"} gutterBottom>Registrar</Typography>
         <Stack direction={"row"} spacing={1}>
+          {!isLoading && account !== owner && <Typography>Only owner can add a registrar</Typography>}
           {!isLoading && account === owner && <AddRegistrar />}
         </Stack>
       </Box>

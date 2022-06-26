@@ -5,6 +5,7 @@ import Dashboard from "./layouts/Dashboard";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Contributors from "./panes/Contributors";
 import RegistrarPane from "./panes/RegistrarPane";
+import Cars from "./panes/cars";
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
                         <Route path={"/"} element={<ResearchPane/>}/>
                         <Route path={"/contributors"} element={<Contributors/>}/>
                         <Route path={"/registrars"} element={<RegistrarPane/>}/>
+                        <Route path={"/cars"} element={<Cars/>}/>
                     </Routes>
                 </Dashboard>
             </BrowserRouter>

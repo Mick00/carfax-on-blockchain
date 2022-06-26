@@ -11,7 +11,7 @@ import React from "react";
 
 export default function Registration() {
   const { contributors, canRead } = useCOBApi();
-  const { register, handleSubmit, control } = useForm();
+  const { handleSubmit, control } = useForm();
   const { account } = useWeb3React();
 
   const {data: isRegistrar, isLoading} = useQuery(
@@ -31,8 +31,8 @@ export default function Registration() {
     <Box>
       <Typography gutterBottom>Register a new contributor</Typography>
       <form>
-        <ControlledTextField name={"contributor"} label={"Address"} control={control} rules={{validate: {isValidAddress}}}/>
-        <ControlledTextField name={"hash"} label={"IPFS hash"} control={control}/>
+        <ControlledTextField name={"contributor"} label={"Address"} control={control} rules={{isValidAddress}}/>
+        <ControlledTextField name={"hash"} label={"IPFS hash"} control={control} min={0}/>
         <Button onClick={handleSubmit(onSubmit)} variant={"contained"}>Register</Button>
       </form>
       <TransactionState transaction={registerContributor}/>
