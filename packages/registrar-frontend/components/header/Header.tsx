@@ -5,6 +5,13 @@ import PropTypes from "prop-types";
 // Dropdown Component
 import Search from "./Search";
 import Profile from "./Profile";
+import { MetaMaskInpageProvider } from "@metamask/providers";
+
+declare global {
+  interface Window{
+    ethereum?:MetaMaskInpageProvider
+  }
+}
 
 export interface IHeaderProps {
     sx?: object;

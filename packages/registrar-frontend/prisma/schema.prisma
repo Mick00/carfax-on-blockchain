@@ -20,6 +20,10 @@ model Contributor {
 
   DateOfRegistration DateTime @default(now()) @db.Timestamp(6)
 
+  CodePostal String @db.VarChar(10)
+  
+  City String @db.VarChar(20)
+
   Address String @db.VarChar(255)
 
   Email String @db.VarChar(100)

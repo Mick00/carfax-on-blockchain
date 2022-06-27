@@ -34,6 +34,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
         SectorOfActivity: subscription.sectorOfActivity,
         Address: subscription.address,
         DateOfRegistration: subscription.dateOfRegistration,
+        CodePostal : subscription.codePostal,
+        City: subscription.city,
         Email: subscription.email,
         Website: subscription.website,
         PhoneNumber: subscription.phoneNumber,
