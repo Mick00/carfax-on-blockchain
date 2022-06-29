@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = "mysql://root:carfax123@localhost:3306/prisma"
+}
+
+model Contributor {
+
+  id Int @id @default(autoincrement())
+
+  CompanyName String @db.VarChar(40)
+
+  SectorOfActivity String @db.VarChar(30)
+
+  DateOfRegistration DateTime @default(now()) @db.Timestamp(6)
+
+  CodePostal String @db.VarChar(10)
+  
+  City String @db.VarChar(20)
+
+  Address String @db.VarChar(255)
+
+  Email String @db.VarChar(100)
+
+  Website String @db.VarChar(130)
+
+  PhoneNumber String @db.VarChar(130)
+
+  WalletAddress String @db.VarChar(64)
+
+}
+
+// Name of the company
+// Sector of activity (reparator or insurance)
+// Address
+// Email address
+// Website
+// Phone number
+// Wallet address that will mint the NFT
