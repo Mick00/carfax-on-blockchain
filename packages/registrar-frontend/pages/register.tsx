@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import {ethers} from "ethers";
 import {
     Grid,
     Stack,
@@ -13,6 +14,7 @@ import {
     Alert
   } from "@mui/material";
   import BaseCard from "../components/baseCard/BaseCard";
+import { SingleBedTwoTone } from "@mui/icons-material";
   
   const defaultValues = {
     companyName : "",
@@ -35,6 +37,17 @@ import {
        setWalletAddress(window.ethereum.selectedAddress);
       }, []);
 
+    const signAndSendToIPFS = async (values: any) => {
+        //signer 
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        console.log("this is the " + signer);
+        const signature = await signer.signMessage(JSON.stringify(values));
+        const constructedObject = '{ "data" :' + JSON.stringify(values) + '},'+'"signer" :' + signer+','+ '"signature" :' + signature + '}';
+        console.log(constructedObject);
+    }
+    
+
     const handleSubmit = () => {
         // console.log(window.ethereum.selectedAddress);
         setFormValues({...formValues,["walletAddress"]: window.ethereum.selectedAddress,});
@@ -45,7 +58,7 @@ import {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify(formValues),
-          })
+          }).then(res => signAndSendToIPFS(formValues));
     }
 
     const checkAuth = () => {
@@ -178,6 +191,6 @@ import {
         </Grid>
       </Grid>
     );
-  };
+  }
   
   export default Register;
