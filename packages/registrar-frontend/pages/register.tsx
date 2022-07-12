@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { create } from 'ipfs-http-client';
+import { useCOBApi } from "../components/COBProvider";
 import {ethers} from "ethers";
 import {
     Grid,
@@ -31,6 +33,11 @@ import { SingleBedTwoTone } from "@mui/icons-material";
   const Register = () => {
     const [formValues, setFormValues] = useState(defaultValues);
     const [walletAddress, setWalletAddress] = useState(null);
+    const [multiaddr, setMultiaddr] = useState('/ip4/127.0.0.1/tcp/5001');
+    const [ipfsError, setIpfsError] = useState(null);
+    const [ipfs, setIpfs] = useState(null)
+    const [id, setId] = useState(null)
+    const [fileHash, setFileHash] = useState(null)
 
     useEffect(()=> {
        console.log(window.ethereum.selectedAddress);
@@ -44,13 +51,47 @@ import { SingleBedTwoTone } from "@mui/icons-material";
         console.log("this is the " + signer);
         const signature = await signer.signMessage(JSON.stringify(values));
         const constructedObject = '{ "data" :' + JSON.stringify(values) + '},'+'"signer" :' + signer+','+ '"signature" :' + signature + '}';
+
         console.log(constructedObject);
-    }
+        const blob = new Blob([constructedObject], { type: 'application/json' });
+        const file = new File([ blob ], 'file.json');
+        await connectToIPFS();
+        try {
+          const added = await ipfs.add(constructedObject);
     
+          setFileHash(added.cid.toString())
+          console.log("this is the hash that was saved" + added.cid.toString());
+        } catch (err) {
+          console.log(err.message);
+          setIpfsError(err.message)
+        }
+
+    }
+
+    const connectToIPFS = async () => {
+      try {
+        const http = create(multiaddr)
+        const isOnline = await http.isOnline()
+            
+        if (isOnline) {
+          setIpfs(http)
+          console.log("IPFS is online");
+          setIpfsError(null)
+        }
+      }
+      catch(err) {
+        setIpfsError(err.message)
+      }
+    }
+
+    const sendOnChain(hash: any) {
+    }
+
+  
 
     const handleSubmit = () => {
         // console.log(window.ethereum.selectedAddress);
-        setFormValues({...formValues,["walletAddress"]: window.ethereum.selectedAddress,});
+        setFormValues({...formValues,["walletAddress"]: window.ethereum.selectedAddress,["StateOfRegistration"]:"1"});
         console.table(formValues);
         fetch('/api/register', {
             method: 'POST',
