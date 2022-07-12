@@ -53,35 +53,5 @@
       "prettier-plugin-solidity": "^1.0.0-beta.19",
       "shx": "^0.3.4",
       "ts-node": "^10.7.0"
-   },
-   "lint-staged": {
-      "packages/vite-app-ts/src/**/*.{ts,tsx}": [
-         "yarn workspace @scaffold-eth/vite-app lint --fix",
-         "yarn workspace @scaffold-eth/vite-app format"
-      ],
-      "packages/common/src/**/*.{ts,tsx}": [
-         "yarn workspace @scaffold-eth/common lint --fix",
-         "yarn workspace @scaffold-eth/common format"
-      ],
-      "packages/hardhat-ts/test/**/*.ts": [
-         "yarn workspace @scaffold-eth/hardhat lint --fix",
-         "yarn workspace @scaffold-eth/hardhat format"
-      ],
-      "packages/hardhat-ts/helpers/**/*.ts": [
-         "yarn workspace @scaffold-eth/hardhat lint --fix",
-         "yarn workspace @scaffold-eth/hardhat format"
-      ],
-      "packages/hardhat-ts/tasks/**/*.ts": [
-         "yarn workspace @scaffold-eth/hardhat lint --fix",
-         "yarn workspace @scaffold-eth/hardhat format"
-      ],
-      "packages/hardhat-ts/deploy/**/*.ts": [
-         "yarn workspace @scaffold-eth/hardhat lint --fix",
-         "yarn workspace @scaffold-eth/hardhat format"
-      ],
-      "packages/hardhat-ts/**/*.sol": [
-         "yarn workspace @scaffold-eth/hardhat format",
-         "yarn workspace @scaffold-eth/hardhat solhint --fix"
-      ]
    }
 }

@@ -16,6 +16,8 @@ build
 dist
 
 # hardhat ts
+packages/hardhat-ts/.env
+packages/hardhat-ts/api/contract-types
 packages/hardhat-ts/cache
 packages/hardhat-ts/generated
 !packages/hardhat-ts/generated/.gitignore
