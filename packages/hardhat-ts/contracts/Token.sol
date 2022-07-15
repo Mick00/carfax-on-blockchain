@@ -16,13 +16,4 @@ contract Token is ERC20, Ownable {
   function burn(uint256 amount) external onlyOwner {
     _burn(msg.sender, amount);
   }
-
-  function mintFor(address recipient, uint256 amount) external onlyOwner {
-    require(totalSupply() < MAX_SUPPLY, "Token already fully minted.");
-    _mint(recipient, amount);
-  }
-
-  function burnFor(address recipient, uint256 amount) external onlyOwner {
-    _burn(recipient, amount);
-  }
 }

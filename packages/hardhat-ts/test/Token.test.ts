@@ -37,30 +37,17 @@ describe('Token', function () {
 
   it("Should only let owner use contract's functions", async () => {
     await expect(tokenContract.connect(alice).mint(1)).revertedWith(ONLY_OWNER);
-    await expect(tokenContract.connect(alice).mintFor(alice.address,1)).revertedWith(ONLY_OWNER);
     await expect(tokenContract.connect(alice).burn(1)).revertedWith(ONLY_OWNER);
-    await expect(tokenContract.connect(alice).burnFor(alice.address,1)).revertedWith(ONLY_OWNER);
   });
 
   describe('Mint process', function () {
-    let currentSupply: BigNumber;
-
     it('Should mint tokens', async () => {
       await tokenContract.mint(10);
       expect(await tokenContract.balanceOf(deployer.address)).to.equal(10);
     });
 
-    it('Should mint tokens for Alice', async () => {
-      await tokenContract.mintFor(alice.address, 10);
-      expect(await tokenContract.balanceOf(alice.address)).to.equal(10);
-    });
-
     it('Should not mint tokens since above MAX_SUPPLY', async () => {
       await expect(tokenContract.mint(TOKEN_MAX_SUPPLY + 10)).revertedWith(TOKEN_MAX_SUPPLY_REACHED)
-    });
-
-    it('Should not mint tokens since above MAX_SUPPLY', async () => {
-      await expect(tokenContract.mintFor(alice.address, TOKEN_MAX_SUPPLY + 10)).revertedWith(TOKEN_MAX_SUPPLY_REACHED)
     });
 
     describe('Burn process', function () {
@@ -74,13 +61,6 @@ describe('Token', function () {
       });
       it("Should throw error since burning more token than deployer's balance", async () => {
         await expect(tokenContract.burn(100)).revertedWith(BURN_EXCEED);
-      });
-      it("Should burn alice's tokens", async () => {
-        await tokenContract.burnFor(alice.address,10);
-        expect(await tokenContract.balanceOf(alice.address)).to.equal(0);
-      });
-      it("Should throw error since burning more token than Alice's balance", async () => {
-        await expect(tokenContract.burnFor(alice.address,100)).revertedWith(BURN_EXCEED);
       });
     });
   });
