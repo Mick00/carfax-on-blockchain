@@ -53,7 +53,6 @@ describe('Token', function () {
     describe('Burn process', function () {
       beforeEach(async function () {
         await tokenContract.mint(10);
-        await tokenContract.mintFor(alice.address, 10);
       });
       it("Should burn deployer's tokens", async () => {
         await tokenContract.burn(10);
