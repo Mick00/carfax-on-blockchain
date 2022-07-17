@@ -4,7 +4,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Token is ERC20, Ownable {
-  uint256 public MAX_SUPPLY = 1000000000000000000000000000;
+  uint256 public MAX_SUPPLY = 1000000000000000000;
 
   constructor() ERC20("CarFaxToken", "CFT") {}
 
