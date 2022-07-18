@@ -1584,9 +1584,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cob/contracts@workspace:*, @cob/contracts@workspace:packages/hardhat-ts":
+"@cars-on-blockchain/contracts@workspace:*, @cars-on-blockchain/contracts@workspace:packages/hardhat-ts":
   version: 0.0.0-use.local
-  resolution: "@cob/contracts@workspace:packages/hardhat-ts"
+  resolution: "@cars-on-blockchain/contracts@workspace:packages/hardhat-ts"
   dependencies:
     "@atixlabs/hardhat-time-n-mine": ^0.0.5
     "@defi-wonderland/smock": ^2.0.7
@@ -20901,7 +20901,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "protocol-frontend@workspace:packages/protocol-frontend"
   dependencies:
-    "@cob/contracts": "workspace:*"
+    "@cars-on-blockchain/contracts": "workspace:*"
     "@emotion/react": ^11.9.0
     "@emotion/styled": ^11.8.1
     "@mui/icons-material": ^5.8.2

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { Cars, ContractProvider, Contributors, ContributorsDelegation, Reports } from "@cob/contracts";
+import { Cars, ContractProvider, Contributors, ContributorsDelegation, Reports } from "@cars-on-blockchain/contracts";
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 import { JsonRpcProvider } from "@ethersproject/providers";
