@@ -5,7 +5,7 @@ import type { Connector } from '@web3-react/types'
 import { hooks , metaMask } from './metamask-connector'
 import React, { useEffect } from "react";
 import { useSnackBar } from "../SnackBarProvider";
-import { AVAILABLE_NETWORK } from "@cob/contracts";
+import { AVAILABLE_NETWORK } from "@cars-on-blockchain/contracts";
 
 export function getName(connector: Connector) {
   if (connector instanceof MetaMask) return 'MetaMask'
