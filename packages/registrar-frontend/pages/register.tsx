@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { create } from 'ipfs-http-client';
-import { useCOBApi } from "../components/COBProvider";
 import {ethers} from "ethers";
 import {
     Grid,
@@ -17,6 +16,8 @@ import {
   } from "@mui/material";
   import BaseCard from "../components/baseCard/BaseCard";
 import { SingleBedTwoTone } from "@mui/icons-material";
+import {ContractProvider} from "@cob/contracts/api";
+import { JsonRpcProvider } from "@ethersproject/providers";
   
   const defaultValues = {
     companyName : "",
@@ -55,11 +56,13 @@ import { SingleBedTwoTone } from "@mui/icons-material";
         console.log(constructedObject);
         const blob = new Blob([constructedObject], { type: 'application/json' });
         const file = new File([ blob ], 'file.json');
-        await connectToIPFS();
+        sendOnChain("gjgjgjhhf",values.walletAddress);
+        //await connectToIPFS();
         try {
-          const added = await ipfs.add(constructedObject);
+          //const added = await ipfs.add(constructedObject);
     
-          setFileHash(added.cid.toString())
+          //setFileHsendOnChainash(added.cid.toString())
+
           console.log("this is the hash that was saved" + added.cid.toString());
         } catch (err) {
           console.log(err.message);
@@ -84,7 +87,11 @@ import { SingleBedTwoTone } from "@mui/icons-material";
       }
     }
 
-    const sendOnChain(hash: any) {
+    const sendOnChain = (address : any) => {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const contracts = new ContractProvider(provider.getSigner(provider.getSigner()) as unknown as JsonRpcProvider, 5);
+      const contributorsContract = contracts.get("Contributors");
+      contributorsContract.confirmRegistration(address);
     }
 
   
