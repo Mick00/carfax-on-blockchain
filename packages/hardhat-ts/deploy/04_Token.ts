@@ -4,7 +4,7 @@ import { THardhatRuntimeEnvironmentExtended } from 'helpers/types/THardhatRuntim
 
 export const TOKEN_DEPLOYMENT = 'Token';
 
-const deployReports: DeployFunction = async (hre: THardhatRuntimeEnvironmentExtended) => {
+const deployToken: DeployFunction = async (hre: THardhatRuntimeEnvironmentExtended) => {
   const { getNamedAccounts, deployments } = hre;
   const { deploy, get } = deployments;
   const { deployer } = await getNamedAccounts();
@@ -14,5 +14,5 @@ const deployReports: DeployFunction = async (hre: THardhatRuntimeEnvironmentExte
     log: silent(),
   });
 };
-export default deployReports;
-deployReports.tags = [TOKEN_DEPLOYMENT];
+export default deployToken;
+deployToken.tags = [TOKEN_DEPLOYMENT];
