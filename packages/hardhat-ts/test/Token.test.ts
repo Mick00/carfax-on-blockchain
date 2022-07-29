@@ -2,16 +2,13 @@ import '../helpers/hardhat-imports';
 import './helpers/chai-imports';
 
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { expect } from 'chai';
-import { BigNumber } from 'ethers';
 import { Token, Token__factory } from 'api/contract-types';
+import { expect } from 'chai';
 import hre from 'hardhat';
-
-import { TOKEN_MAX_SUPPLY, BURN_EXCEED, TOKEN_MAX_SUPPLY_REACHED, ONLY_OWNER } from './helpers/errors';
 
 import { TOKEN_DEPLOYMENT } from '../deploy/04_Token';
 
-import { equal } from 'assert';
+import { ONLY_OWNER } from './helpers/errors';
 
 const xhre = hre;
 const { deployments, getNamedAccounts, getUnnamedAccounts } = xhre;

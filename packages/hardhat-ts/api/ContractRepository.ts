@@ -1,7 +1,7 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { MultiExport } from 'hardhat-deploy/dist/types';
 
-import { Cars__factory, Contributors__factory, ContributorsDelegation__factory, Reports__factory } from './contract-types';
+import { Cars__factory, Contributors__factory, ContributorsDelegation__factory, Reports__factory, Staking__factory, Token__factory } from './contract-types';
 import contractsExport from './contracts.json';
 
 const contracts = contractsExport as MultiExport;
@@ -11,6 +11,8 @@ export const contractsFactoriesMap = {
   Cars: Cars__factory,
   Reports: Reports__factory,
   ContributorsDelegation: ContributorsDelegation__factory,
+  Token: Token__factory,
+  Staking: Staking__factory,
 } as const;
 
 export class ContractProvider {

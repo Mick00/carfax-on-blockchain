@@ -10,3 +10,4 @@ export const CAR_MINTED = 'Car already minted.';
 export const TOKEN_MAX_SUPPLY = 1000000000000000000;
 export const TOKEN_MAX_SUPPLY_REACHED = 'Token already fully minted.';
 export const BURN_EXCEED = 'ERC20: burn amount exceeds balance';
+export const UNSTAKE_PERIOD_NOT_OVER = 'unstake period is not over';

@@ -22,6 +22,7 @@ import { CARS_DEPLOYMENT } from '../deploy/02_Cars';
 import { REPORTS_DEPLOYMENT } from '../deploy/03_Reports';
 
 import { IS_EXISTENT_TOKEN, ONLY_OWNER, IS_DELEGATED } from './helpers/errors';
+import { addRegistrar } from './helpers/registrars';
 
 const xhre = hre;
 const { deployments, getNamedAccounts, getUnnamedAccounts } = xhre;
@@ -89,7 +90,7 @@ describe('Reports', function () {
     const ODOMETER = 123;
     const CARHASH = 'CAR-HASH';
     beforeEach(async () => {
-      await contributorsContract.addRegistrar(registrar.address);
+      await addRegistrar(registrar.address, xhre);
       await contributorsContract.connect(registrar).register(HASH, contributor.address);
       await contributorsContract.connect(contributor).confirmRegistration(registrar.address);
       contributorId = await contributorsContract.getTokenIds();

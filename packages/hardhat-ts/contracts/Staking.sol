@@ -4,11 +4,10 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract Staking is ReentrancyGuard, Ownable {
+contract Staking is Ownable {
   address public TOKEN;
   address[] internal stakeholders;
   uint256 public UNSTAKE_TIME = 1 weeks;
-  uint256 public FEES = 50; //50% of the total stake is taken as a fee.
   mapping(address => Staker) internal stakers;
 
   struct Staker {
@@ -20,7 +19,15 @@ contract Staking is ReentrancyGuard, Ownable {
     bool exists;
   }
 
-  constructor(address _token) ReentrancyGuard() {
+    struct Unstake {
+        uint256 amount;
+        uint256 queuedAt;
+    }
+
+    mapping(address => Unstake) unstakeQueue;
+
+    event StakeUpdated(address indexed _staker, uint stake);
+  constructor(address _token) {
     TOKEN = _token;
 
     Staker memory user;
@@ -33,10 +40,6 @@ contract Staking is ReentrancyGuard, Ownable {
     stakers[msg.sender] = user;
     stakeholders.push(msg.sender);
   }
-
-  receive() external payable {}
-
-  fallback() external payable {}
 
   function stake(uint256 amount) external {
     require(IERC20(TOKEN).transferFrom(msg.sender, address(this), amount), "Unable to transfer your tokens to this contract");
@@ -56,28 +59,25 @@ contract Staking is ReentrancyGuard, Ownable {
       stakers[msg.sender] = user;
       stakeholders.push(msg.sender);
     }
+      emit StakeUpdated(msg.sender, amount);
   }
 
-  function removeStake(uint256 amount) external {
-    require(stakers[msg.sender].exists, "You are not staking");
-    require(msg.sender != address(this), "You cannot remove your own stake");
-    require(stakers[msg.sender].contribution >= amount, "You do not have enough tokens to unstake");
-
-    address user = msg.sender;
-
-    if (block.timestamp >= stakers[user].lifetime_contribution + UNSTAKE_TIME) {
-      IERC20(TOKEN).transfer(user, stakers[user].contribution - amount);
-      stakers[user].contribution = stakers[user].contribution - amount;
-    } else {
-      IERC20(TOKEN).transfer(user, (amount * 5) / 100);
-      stakers[address(this)].contribution = stakers[address(this)].contribution + (amount * 5) / 100;
-      stakers[user].contribution = stakers[user].contribution - amount;
+    function queueUnstake(uint amount) external {
+        require(stakers[msg.sender].contribution >= amount, "You do not have enough tokens to unstake");
+        stakers[msg.sender].contribution = stakers[msg.sender].contribution - amount;
+        unstakeQueue[msg.sender].amount += amount;
+        unstakeQueue[msg.sender].queuedAt = block.timestamp;
+        emit StakeUpdated(msg.sender, stakers[msg.sender].contribution);
     }
+
+  function unstake() external {
+      require(block.timestamp >= unstakeQueue[msg.sender].queuedAt + UNSTAKE_TIME, "unstake period is not over");
+      IERC20(TOKEN).transfer(msg.sender, unstakeQueue[msg.sender].amount);
+      delete unstakeQueue[msg.sender];
   }
 
-  function getStake(address user) external view returns (uint256) {
-    require(stakers[user].exists, "User is not staking");
-    return stakers[user].contribution;
+  function getStake(address _adress) external view returns (uint256) {
+    return stakers[_adress].contribution;
   }
 
   function removeFeesContract(address _address) external onlyOwner {
