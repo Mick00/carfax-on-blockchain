@@ -60,7 +60,7 @@ describe('Staking', function () {
       expect(await tokenContract.balanceOf(deployer.address)).to.equal(10);
     });
 
-    it.only('Should not let unstake before unstake period end', async () => {
+    it('Should not let unstake before unstake period end', async () => {
       await stakingContract.queueUnstake(10);
       await expect(stakingContract.unstake()).to.be.revertedWith(UNSTAKE_PERIOD_NOT_OVER);
     });
