@@ -33,14 +33,14 @@ export default function COBProvider(props: React.PropsWithChildren) {
 
   const { chainId, connector, account, isActive } = useWeb3React();
   const defaultRPC = new JsonRpcProvider(process.env.REACT_APP_RPC_URL, 5)
-  const [contracts, setContracts] = useState<ContractProvider>(new ContractProvider(defaultRPC, 5))
+  const [contracts, setContracts] = useState<ContractProvider>(new ContractProvider(defaultRPC, "5"))
   const [canWrite, setCanWrite] = useState(false);
   const [canRead, setCanRead] = useState(true);
 
   useEffect(() => {
     if (isActive && connector.provider && chainId){
       const provider = new ethers.providers.Web3Provider(connector.provider)
-      setContracts(new ContractProvider(provider.getSigner(account) as unknown as JsonRpcProvider, chainId))
+      setContracts(new ContractProvider(provider.getSigner(account) as unknown as JsonRpcProvider, "5"))
       setCanRead(true);
       setCanWrite(true);
     } else {
