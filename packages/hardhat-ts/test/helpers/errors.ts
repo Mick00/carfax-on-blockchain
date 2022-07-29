@@ -7,3 +7,6 @@ export const IS_CONTRIBUTOR = 'Caller must be owner of token';
 export const IS_CONTRACT = 'Contributors must be a valid contract';
 export const IS_EXISTENT_TOKEN = 'ERC721: owner query for nonexistent token';
 export const CAR_MINTED = 'Car already minted.';
+export const TOKEN_MAX_SUPPLY = 1000000000000000000;
+export const TOKEN_MAX_SUPPLY_REACHED = 'Token already fully minted.';
+export const BURN_EXCEED = 'ERC20: burn amount exceeds balance';
