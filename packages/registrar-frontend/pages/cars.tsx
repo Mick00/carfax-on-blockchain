@@ -10,126 +10,122 @@ import {
   FormControl,
   Button,
   Box,
-  Alert
+  Alert,
 } from "@mui/material";
 import BaseCard from "../components/baseCard/BaseCard";
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers';
 
-
+const defaultValues = {
+  mark: '',
+  model: '',
+  year: '2022',
+  color: '',
+  serialNumber: '',
+};
 
 const Cars = () => {
+  const [formValues, setFormValues] = useState(defaultValues);
+  const [showInvalidAlert, setShowInvalidForm] = useState(false)
 
+  const handleInputChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormValues({
+      ...formValues,
+      [name]: value,
+    });
+  };
 
+  const handleYear = (value:any) => {
+    if(!value) return
+    const date = new Date(value);
+    const year = date.getFullYear();
+    console.log(year)
+    setFormValues({
+      ...formValues,
+      year: year.toString()
+    })
+
+  }
+
+  const handleSubmit = () => {
+    console.log(formValues);
+    if(formValues.mark === '' || formValues.model === '' || formValues.year === '' ||formValues.color === '' || formValues.serialNumber === ''){
+      setShowInvalidForm(true)
+      return;
+    }else{
+      setShowInvalidForm(false);
+    }
+    console.log(formValues);
+  }
 
   return (
     <Grid container spacing={0}>
       <Grid item xs={12} lg={12}>
-        <BaseCard title="New Report">
+        <BaseCard title="Add New Car">
           <form>
             <Stack spacing={3}>
               <TextField
-                id="company-name"
-                label="Company Name"
+                id="mark"
+                label="Mark"
                 variant="outlined"
-                name="companyName"
-                // value={}
-                // onChange={}
+                name="mark"
+                value={formValues.mark}
+                onChange={handleInputChange}
               />
-              <TextField id="car-id" label="Car ID" variant="outlined" />
-              <FormControl>
-                <FormLabel id="demo-radio-buttons-group-label">Sector Of Activity</FormLabel>
-                <RadioGroup
-                  aria-labelledby="demo-radio-buttons-group-label"
-                  defaultValue="reparator"
-                  name="sectorOfActivity"
-                  // value={}
-                  // onChange={}
-                >
-                  <FormControlLabel
-                    key="reparator"
-                    value="reparator"
-                    control={<Radio />}
-                    label="Reparator"
-                  />
-                  <FormControlLabel
-                    key="insurance"
-                    value="insurance"
-                    control={<Radio />}
-                    label="Insurance"
-                  />
-                </RadioGroup>
-              </FormControl>
+              <TextField 
+                id="model" 
+                label="Model" 
+                variant="outlined"
+                name="model"
+                value={formValues.model}
+                onChange={handleInputChange} 
+              />
               <Box
                 component="form"
                 noValidate
                 autoComplete="off"
               >
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
 
+                <DatePicker
+                  views={['year']}
+                  label="Year"
+                  value={formValues.year}
+                  onChange={(newValue) => {
+                    handleYear(newValue)
+                  }}
+                  renderInput={(params) => <TextField name='year' {...params} style={{ width: '20%', marginRight: '5%' }}/>}
+                  
+                />
+                </LocalizationProvider>
                 <TextField
-                  id="car-brand"
-                  label="Address"
+                  id="color"
+                  label="Color"
                   variant="outlined"
-                  name="address"
-                  // value={}
-                  // onChange={}
+                  name="color"
+                  value={formValues.color}
+                  onChange={handleInputChange}
                   style={{ width: '30%', marginRight: '5%' }}
                 />
                 <TextField
-                  id="car-model"
-                  label="Postal Code"
+                  id="serialNumber"
+                  label="Serial Number"
                   variant="outlined"
-                  name="codePostal"
-                  // value={}
-                  // onChange={}
-                  style={{ width: '30%', marginRight: '5%' }}
-                />
-                <TextField
-                  id="city"
-                  label="City"
-                  variant="outlined"
-                  name="city"
-                  // value={}
-                  // onChange={}
-                  style={{ width: '30%' }}
-                />
-              </Box>
-              <TextField
-                id="email"
-                label="Email"
-                variant="outlined"
-                name="email"
-                // value={}
-                // onChange={}
-              />
-              <TextField
-                id="website"
-                label="Website"
-                variant="outlined"
-                name="website"
-                // value={}
-                // onChange={}
-              />
-              <Box
-                component="form"
-                noValidate
-                autoComplete="off"
-              >
-                <TextField
-                  id="phone"
-                  label="Phone Number"
-                  variant="outlined"
-                  style={{ width: '30%', marginRight: '5%' }}
-                  name="phoneNumber"
-                  // value={}
-                  // onChange={}
+                  name="serialNumber"
+                  value={formValues.serialNumber}
+                  onChange={handleInputChange}
+                  style={{ width: '40%' }}
                 />
               </Box>
             </Stack>
             <br />
             {/* <Button disable={} onClick={} variant="contained"> */}
-            <Button>
+            <Button onClick={handleSubmit}>
               Submit
             </Button>
-            {/* {!walletAddress && <Alert severity="warning">Please login to metaMask before submitting</Alert>} */}
+            {showInvalidAlert && <Alert severity="warning">Please fill in all form fields</Alert>}
           </form>
         </BaseCard>
       </Grid>
