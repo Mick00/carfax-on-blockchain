@@ -6,7 +6,7 @@ import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 
 const Menuitems = [
     {
-      title: "Dashbaord",
+      title: "Home",
       icon: <HomeIcon width="20" height="20" style={{color:'#000000'}}/>,
       href: "/",
     },
