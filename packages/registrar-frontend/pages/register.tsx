@@ -38,7 +38,6 @@ const Register = () => {
   const [walletAddress, setWalletAddress] = useState(null);
   const [multiaddr, setMultiaddr] = useState('/ip4/127.0.0.1/tcp/5001');
   const [ipfsError, setIpfsError] = useState(null);
-  const [ipfs, setIpfs] = useState(null)
   const [id, setId] = useState(null)
   const [fileHash, setFileHash] = useState(null)
 
@@ -60,8 +59,9 @@ const Register = () => {
     const file = new File([blob], 'file.json');
 
 
-    await connectToIPFS();
+    const ipfs = await connectToIPFS();
     try {
+      console.log("after waited IPFS connection")
       const added = await ipfs.add(constructedObject);
       updateDb(values);
       //update put request to api update to state 1 
@@ -81,9 +81,9 @@ const Register = () => {
 
       if (isOnline) {
         console.log(http)
-        setIpfs(http)
         console.log("IPFS is online");
         setIpfsError(null)
+        return http;
       }
     }
     catch (err) {

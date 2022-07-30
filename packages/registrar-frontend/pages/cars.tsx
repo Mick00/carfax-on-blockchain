@@ -47,7 +47,6 @@ const Cars = () => {
   const [walletAddress, setWalletAddress] = useState(null);
   const [multiaddr, setMultiaddr] = useState('/ip4/127.0.0.1/tcp/5001');
   const [ipfsError, setIpfsError] = useState(null);
-  const [ipfs, setIpfs] = useState(null)
   const [id, setId] = useState(null)
   const [fileHash, setFileHash] = useState(null)
 
@@ -56,8 +55,9 @@ const Cars = () => {
     await provider.send("eth_requestAccounts", []);
     const contracts = new ContractProvider(provider.getSigner() as unknown as JsonRpcProvider, 5);
     const contributorsContract = contracts.get("Cars");
+    contributorsContract.serialNumberToCar(serialNumber).then(r => console.log(r.toString())).catch(err => console.log(err));
     //in the then update to state 3
-    contributorsContract.register(serialNumber, odometer, hash).then(r => r.wait(1)).then(c => console.log(c)).catch(err => console.log(err));
+    //contributorsContract.register(serialNumber, odometer, hash).then(r => r.wait(1)).then(c => console.log(c)).catch(err => console.log(err));
   }
 
   // const checkCarExist = async (serialNumber: any) => {
@@ -81,7 +81,7 @@ const Cars = () => {
     const signature = await signForm(values);
     const signer = provider.getSigner();
     const constructedObject =  '{ "data" :' + JSON.stringify(values) + '},' + '"signer" :' + signer + ',' + '"signature" :' + signature + '}';
-    await connectToIPFS();
+    const ipfs = await connectToIPFS();
         try {
           const added = await ipfs.add(constructedObject);
           await sendOnChain(values.serial_number, values.odometer, added);
@@ -99,9 +99,9 @@ const Cars = () => {
 
         if (isOnline) {
           console.log(http)
-          setIpfs(http)
           console.log("IPFS is online");
           setIpfsError(null)
+          return http;
         }
       } catch (err) {
         setIpfsError(err.message)
