@@ -1,5 +1,5 @@
 import { DeployFunction } from 'hardhat-deploy/types';
-import { silent } from 'helpers/logging';
+import { log } from 'helpers/logging';
 import { THardhatRuntimeEnvironmentExtended } from 'helpers/types/THardhatRuntimeEnvironmentExtended';
 
 import { CONTRIBUTORSDELEGATION_DEPLOYMENT } from './01_ContributorsDelegation';
@@ -17,7 +17,7 @@ const deployReports: DeployFunction = async (hre: THardhatRuntimeEnvironmentExte
 
   await deploy(REPORTS_DEPLOYMENT, {
     from: deployer,
-    log: silent(),
+    log: log(),
     args: [ContributorsDelegation.address, Cars.address],
   });
 };

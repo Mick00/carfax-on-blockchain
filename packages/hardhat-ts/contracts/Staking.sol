@@ -59,7 +59,7 @@ contract Staking is Ownable {
       stakers[msg.sender] = user;
       stakeholders.push(msg.sender);
     }
-      emit StakeUpdated(msg.sender, amount);
+      emit StakeUpdated(msg.sender, stakers[msg.sender].contribution);
   }
 
     function queueUnstake(uint amount) external {

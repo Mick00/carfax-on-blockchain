@@ -1,5 +1,5 @@
 import { DeployFunction } from 'hardhat-deploy/types';
-import { silent } from 'helpers/logging';
+import { log } from 'helpers/logging';
 import { THardhatRuntimeEnvironmentExtended } from 'helpers/types/THardhatRuntimeEnvironmentExtended';
 
 import { TOKEN_DEPLOYMENT } from './04_Token';
@@ -14,7 +14,7 @@ const deployStaking: DeployFunction = async (hre: THardhatRuntimeEnvironmentExte
 
   await deploy(STAKING_DEPLOYMENT, {
     from: deployer,
-    log: silent(),
+    log: log(),
     args: [Token.address],
   });
 };

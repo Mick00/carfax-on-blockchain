@@ -1,5 +1,5 @@
 import { DeployFunction } from 'hardhat-deploy/types';
-import { silent } from 'helpers/logging';
+import { log } from 'helpers/logging';
 import { THardhatRuntimeEnvironmentExtended } from 'helpers/types/THardhatRuntimeEnvironmentExtended';
 
 export const TOKEN_DEPLOYMENT = 'Token';
@@ -11,7 +11,7 @@ const deployToken: DeployFunction = async (hre: THardhatRuntimeEnvironmentExtend
 
   await deploy(TOKEN_DEPLOYMENT, {
     from: deployer,
-    log: silent(),
+    log: log(),
   });
 };
 export default deployToken;

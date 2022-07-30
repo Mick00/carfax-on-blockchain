@@ -5,6 +5,7 @@ import { useCOBApi } from "../components/COBProvider";
 import { useQuery } from "react-query";
 import { useWeb3React } from "@web3-react/core";
 import { useWriteContract } from "../components/hooks/useWriteContract";
+/*
 
 function AddRegistrar() {
   const { contributors } = useCOBApi();
@@ -17,7 +18,7 @@ function AddRegistrar() {
     setAddress(newAddress);
   }
 
-  const addRegistrar = useWriteContract((address: string) => contributors().addRegistrar(address))
+  const addRegistrar = useWriteContract((address: string) => ()/!*contributors().addRegistrar(address)*!/)
 
   const handleAdd = () => addRegistrar.mutate(address)
 
@@ -37,6 +38,7 @@ function AddRegistrar() {
   </>
   )
 }
+*/
 
 export default function RegistrarPane() {
   const { contributors, canRead } = useCOBApi();
@@ -51,7 +53,7 @@ export default function RegistrarPane() {
         <Typography variant={"h3"} gutterBottom>Registrar</Typography>
         <Stack direction={"row"} spacing={1}>
           {!isLoading && account !== owner && <Typography>Only owner can add a registrar</Typography>}
-          {!isLoading && account === owner && <AddRegistrar />}
+          {!isLoading && account === owner && (null)}
         </Stack>
       </Box>
     </>

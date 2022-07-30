@@ -1,5 +1,5 @@
 import { DeployFunction } from 'hardhat-deploy/types';
-import { silent } from 'helpers/logging';
+import { log } from 'helpers/logging';
 import { THardhatRuntimeEnvironmentExtended } from 'helpers/types/THardhatRuntimeEnvironmentExtended';
 
 import { STAKING_DEPLOYMENT } from './05_Staking';
@@ -14,7 +14,7 @@ const deployContributors: DeployFunction = async (hre: THardhatRuntimeEnvironmen
   await deploy(CONTRIBUTORS_DEPLOYMENT, {
     from: deployer,
     args: [staking.address],
-    log: silent(),
+    log: log(),
   });
 };
 export default deployContributors;
