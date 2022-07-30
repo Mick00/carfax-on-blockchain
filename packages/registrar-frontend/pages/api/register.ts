@@ -43,6 +43,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Respon
       }
     }).then(contributor => { console.log("inserted this contributor" + contributor) });
   }
+  else if (req.method === 'PUT') {
+    console.log("here put is called")
+  }
   res.status(200).json({ name: 'world' })
 }
 

@@ -48,7 +48,7 @@ const Register = () => {
   }, []);
 
   const signAndSendToIPFS = async (values: any) => {
-    //signer 
+    //signer
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
     console.log("this is the " + signer);
@@ -59,16 +59,17 @@ const Register = () => {
     const blob = new Blob([constructedObject], { type: 'application/json' });
     const file = new File([blob], 'file.json');
 
-    //sendOnChain("gjgjgjhhf",values.walletAddress);
+
     await connectToIPFS();
     try {
       const added = await ipfs.add(constructedObject);
+      updateDb(values);
       //update put request to api update to state 1 
-      await sendOnChain(added, values.walletAddress);
+      await sendOnChain("657658765934789760dgfhsga", values.walletAddress);
       console.log("this is the hash that was saved: " + added.cid.toString());
     } catch (err) {
       console.log(err);
-      //setIpfsError(err.message)
+      setIpfsError(err.message)
     }
 
   }
@@ -114,6 +115,17 @@ const Register = () => {
       body: JSON.stringify(formValues),
     }).then(res => signAndSendToIPFS(formValues));
   }
+
+  const updateDb = (formValues : any) => {
+    //update database value prisma
+    fetch('/api/register', {
+        method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formValues),
+        }).then(res => console.log(res));
+    }
 
   const checkAuth = () => {
     console.log("this is the address in checkAuth" + window.ethereum.selectedAddress);
