@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { create } from 'ipfs-http-client';
+import jsonFile from '../package.json'
+import { ethers } from "ethers";
 import {
   Grid,
   Stack,
@@ -13,16 +16,20 @@ import {
   Alert,
 } from "@mui/material";
 import BaseCard from "../components/baseCard/BaseCard";
+import {ContractProvider} from "@cob/contracts";
+import {JsonRpcProvider} from "@ethersproject/providers";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers';
+import {string} from "prop-types";
 
 const defaultValues = {
-  mark: '',
+  make: '',
   model: '',
   year: '2022',
   color: '',
-  serialNumber: '',
+  serial_number: '',
+  odometer: '',
 };
 
 const Cars = () => {
@@ -36,6 +43,70 @@ const Cars = () => {
       [name]: value,
     });
   };
+  //const [formValues, setFormValues] = useState(defaultValues);
+  const [walletAddress, setWalletAddress] = useState(null);
+  const [multiaddr, setMultiaddr] = useState('/ip4/127.0.0.1/tcp/5001');
+  const [ipfsError, setIpfsError] = useState(null);
+  const [ipfs, setIpfs] = useState(null)
+  const [id, setId] = useState(null)
+  const [fileHash, setFileHash] = useState(null)
+
+  const sendOnChain = async (serialNumber: any,odometer: any, hash : any) => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+    const contracts = new ContractProvider(provider.getSigner() as unknown as JsonRpcProvider, 5);
+    const contributorsContract = contracts.get("Cars");
+    //in the then update to state 3
+    contributorsContract.register(serialNumber, odometer, hash).then(r => r.wait(1)).then(c => console.log(c)).catch(err => console.log(err));
+  }
+
+  // const checkCarExist = async (serialNumber: any) => {
+  //   const provider = new ethers.providers.Web3Provider(window.ethereum);
+  //   await provider.send("eth_requestAccounts", []);
+  //   const contracts = new ContractProvider(provider.getSigner() as unknown as JsonRpcProvider, 5);
+  //   const contributorsContract = contracts.get("Cars");
+  //   //in the then update to state 3
+  //   return contributorsContract.getCarFromSerialNumber("46773583845grhw").then(r => r.wait(1)).then(c => console.log(c)).catch(err => console.log(err));
+  // }
+
+  const signForm = async (values : any) => {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const signature = await signer.signMessage(JSON.stringify(values));
+        return signature;
+  }
+
+  const sendToIPFSandOnChain = async (values: any) => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signature = await signForm(values);
+    const signer = provider.getSigner();
+    const constructedObject =  '{ "data" :' + JSON.stringify(values) + '},' + '"signer" :' + signer + ',' + '"signature" :' + signature + '}';
+    await connectToIPFS();
+        try {
+          const added = await ipfs.add(constructedObject);
+          await sendOnChain(values.serial_number, values.odometer, added);
+          console.log("this is the hash that was saved: " + added.cid.toString());
+        } catch (err) {
+          console.log(err);
+          setIpfsError(err.message)
+        }
+    }
+
+    const connectToIPFS = async () => {
+      try {
+        const http = create(multiaddr)
+        const isOnline = await http.isOnline()
+
+        if (isOnline) {
+          console.log(http)
+          setIpfs(http)
+          console.log("IPFS is online");
+          setIpfsError(null)
+        }
+      } catch (err) {
+        setIpfsError(err.message)
+      }
+    }
 
   const handleYear = (value:any) => {
     if(!value) return
@@ -49,15 +120,20 @@ const Cars = () => {
 
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log(formValues);
-    if(formValues.mark === '' || formValues.model === '' || formValues.year === '' ||formValues.color === '' || formValues.serialNumber === ''){
+    if(formValues.make === '' || formValues.model === '' || formValues.year === '' ||formValues.color === '' || formValues.serial_number === '' || formValues.odometer === '') {
       setShowInvalidForm(true)
       return;
     }else{
       setShowInvalidForm(false);
     }
     console.log(formValues);
+
+    sendToIPFSandOnChain(formValues)
+    await sendOnChain("46773583845grhw", "1400000", "45768yetgsdfjnbnetuiouuyt45");
+
+
   }
 
   return (
@@ -67,20 +143,20 @@ const Cars = () => {
           <form>
             <Stack spacing={3}>
               <TextField
-                id="mark"
-                label="Mark"
+                id="make"
+                label="Make"
                 variant="outlined"
-                name="mark"
-                value={formValues.mark}
+                name="make"
+                value={formValues.make}
                 onChange={handleInputChange}
               />
-              <TextField 
-                id="model" 
-                label="Model" 
+              <TextField
+                id="model"
+                label="Model"
                 variant="outlined"
                 name="model"
                 value={formValues.model}
-                onChange={handleInputChange} 
+                onChange={handleInputChange}
               />
               <Box
                 component="form"
@@ -97,7 +173,7 @@ const Cars = () => {
                     handleYear(newValue)
                   }}
                   renderInput={(params) => <TextField name='year' {...params} style={{ width: '20%', marginRight: '5%' }}/>}
-                  
+
                 />
                 </LocalizationProvider>
                 <TextField
@@ -112,13 +188,21 @@ const Cars = () => {
                 <TextField
                   id="serialNumber"
                   label="Serial Number"
-                  variant="outlined"
-                  name="serialNumber"
-                  value={formValues.serialNumber}
+                  name="serial_number"
+                  value={formValues.serial_number}
                   onChange={handleInputChange}
                   style={{ width: '40%' }}
                 />
               </Box>
+              <TextField
+                  id="odometer"
+                  label="Odometer"
+                  variant="outlined"
+                  name="odometer"
+                  value={formValues.odometer}
+                  onChange={handleInputChange}
+                  style={{ width: '40%' }}
+              />
             </Stack>
             <br />
             {/* <Button disable={} onClick={} variant="contained"> */}

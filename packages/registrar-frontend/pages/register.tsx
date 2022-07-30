@@ -101,8 +101,6 @@ const Register = () => {
     contributorsContract.register(hash, address).then(r => r.wait(1)).then(c => console.log(c)).catch(err => console.log(err));
   }
 
-
-
   const handleSubmit = () => {
     // console.log(window.ethereum.selectedAddress);
     setFormValues({ ...formValues, ["walletAddress"]: window.ethereum.selectedAddress, ["StateOfRegistration"]: "1" });
