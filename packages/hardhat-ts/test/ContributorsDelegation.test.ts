@@ -11,6 +11,7 @@ import { CONTRIBUTORS_DEPLOYMENT } from '../deploy/00_Contributors';
 import { CONTRIBUTORSDELEGATION_DEPLOYMENT } from '../deploy/01_ContributorsDelegation';
 
 import { IS_CONTRIBUTOR, IS_CONTRACT, IS_EXISTENT_TOKEN, ONLY_OWNER } from './helpers/errors';
+import { addRegistrar } from './helpers/registrars';
 
 const xhre = hre;
 const { deployments, getNamedAccounts, getUnnamedAccounts } = xhre;
@@ -48,7 +49,7 @@ describe('ContributorsDelegation', function () {
   describe('Delegate process', function () {
     let id: BigNumber;
     beforeEach(async () => {
-      await contributorsContract.addRegistrar(registrar.address);
+      await addRegistrar(registrar.address, xhre);
       await contributorsContract.connect(registrar).register('test', contributor.address);
       await contributorsContract.connect(contributor).confirmRegistration(registrar.address);
       id = await contributorsContract.getTokenIds();

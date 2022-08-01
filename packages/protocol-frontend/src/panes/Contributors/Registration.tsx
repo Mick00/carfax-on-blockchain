@@ -16,7 +16,7 @@ export default function Registration() {
 
   const {data: isRegistrar, isLoading} = useQuery(
     `contributors.registrars.${account}`,
-    () => canRead && account? contributors().registrars(account): false
+    () => canRead && account? contributors().isRegistrar(account): false
   )
 
 

@@ -10,7 +10,7 @@ import {
   import FileUploadIcon from '@mui/icons-material/FileUpload';
   import { ChangeEvent } from "react";
 import {ethers} from "ethers";
-import {ContractProvider} from "@cob/contracts";
+import {ContractProvider} from "@cars-on-blockchain/contracts";
 import {JsonRpcProvider} from "@ethersproject/providers";
 import {create} from "ipfs-http-client";
 

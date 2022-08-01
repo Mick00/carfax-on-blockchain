@@ -18,7 +18,7 @@ import {
 import BaseCard from "../components/baseCard/BaseCard";
 import { SingleBedTwoTone } from "@mui/icons-material";
 import { JsonRpcProvider } from "@ethersproject/providers";
-import { ContractProvider } from "@cob/contracts";
+import { ContractProvider } from "@cars-on-blockchain/contracts";
 import { from } from "multiformats/types/src/bases/base";
 
 const defaultValues = {

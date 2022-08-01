@@ -5,12 +5,14 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+import "./Staking.sol";
+
 contract Contributors is ERC721URIStorage, Ownable {
+    Staking immutable staking;
+
   //registrar => contributor => ipfshash
   mapping(address => mapping(address => string)) public waitingForConfirmation;
   mapping(uint => address) public contributorRegistrar;
-
-  mapping(address => bool) public registrars;
 
   //id count.
   uint256 private tokenIds;
@@ -22,16 +24,18 @@ contract Contributors is ERC721URIStorage, Ownable {
   event AddedRegistrar(address indexed registrar);
   event RemovedRegistrar(address indexed registrar);
 
-  modifier isRegistrar() {
-    require(registrars[msg.sender], "Caller is not a registrar");
+  modifier onlyRegistrar() {
+    require(_isRegistrar(msg.sender), "Caller is not a registrar");
     _;
   }
 
   //Gas to deploy contract : 3233690
-  constructor() ERC721("CarFaxContributor", "CFC") {}
+  constructor(address _staking) ERC721("CarFaxContributor", "CFC") {
+      staking = Staking(_staking);
+  }
 
   //Gas without registrar validation : 48671
-  function register(string memory _contributorHash, address _contributor) external isRegistrar {
+  function register(string memory _contributorHash, address _contributor) external onlyRegistrar {
     address registrar = msg.sender;
     waitingForConfirmation[registrar][_contributor] = _contributorHash;
 
@@ -75,15 +79,13 @@ contract Contributors is ERC721URIStorage, Ownable {
     emit RemovedContributor(registrator, _tokenId);
   }
 
-  function addRegistrar(address _registrar) external onlyOwner {
-    registrars[_registrar] = true;
-      emit AddedRegistrar(_registrar);
+  function isRegistrar(address _address) external view returns(bool) {
+      return _isRegistrar(_address);
   }
 
-  function removeRegistrar(address _registrar) external onlyOwner {
-    delete registrars[_registrar];
-      emit RemovedRegistrar(_registrar);
-  }
+    function _isRegistrar(address _address) internal view returns(bool) {
+        return staking.getStake(_address) > 0;
+    }
 
   function _isHashEmpty(string memory hash) private pure returns (bool) {
     return bytes(hash).length == 0;

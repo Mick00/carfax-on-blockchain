@@ -16,7 +16,7 @@ import {
   Alert,
 } from "@mui/material";
 import BaseCard from "../components/baseCard/BaseCard";
-import {ContractProvider} from "@cob/contracts";
+import {ContractProvider} from "@carfax-on/contracts";
 import {JsonRpcProvider} from "@ethersproject/providers";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';

@@ -9,7 +9,8 @@ import hre from 'hardhat';
 
 import { CONTRIBUTORS_DEPLOYMENT } from '../deploy/00_Contributors';
 
-import { IS_REGISTRAR, ONLY_OWNER } from './helpers/errors';
+import { IS_REGISTRAR } from './helpers/errors';
+import { addRegistrar } from './helpers/registrars';
 
 const xhre = hre;
 const { deployments, getNamedAccounts, getUnnamedAccounts } = xhre;
@@ -31,19 +32,9 @@ describe('Contributors', function () {
     contributorsContract = Contributors__factory.connect(deployment.address, deployer);
   });
 
-  it('Should let owner add and remove registrar', async () => {
-    await contributorsContract.addRegistrar(registrar.address);
-    expect(await contributorsContract.registrars(registrar.address)).to.be.true;
-    await contributorsContract.removeRegistrar(registrar.address);
-    expect(await contributorsContract.registrars(registrar.address)).to.be.false;
-  });
-
-  it('Should only let owner add registrar', async () => {
-    await expect(contributorsContract.connect(contributor).addRegistrar(registrar.address)).revertedWith(ONLY_OWNER);
-  });
-
-  it('Should only let owner remove registrar', async () => {
-    await expect(contributorsContract.connect(contributor).removeRegistrar(registrar.address)).revertedWith(ONLY_OWNER);
+  it('Should look in registrar contract', async () => {
+    await addRegistrar(registrar.address, xhre);
+    expect(await contributorsContract.isRegistrar(registrar.address)).to.be.true;
   });
 
   it('Should only let registrar register', async () => {
@@ -53,7 +44,7 @@ describe('Contributors', function () {
   describe('Registration process', function () {
     const HASH = 'test';
     beforeEach(async () => {
-      await contributorsContract.addRegistrar(registrar.address);
+      await addRegistrar(registrar.address, xhre);
       await contributorsContract.connect(registrar).register(HASH, contributor.address);
     });
 

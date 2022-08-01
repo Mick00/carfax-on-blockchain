@@ -4,6 +4,7 @@ import Panels  from "../../components/Panels";
 import Registration from "./Registration";
 import ContributorsList from "./ContributorsList";
 import WaitingConfirmation from "./WaitingConfirmation";
+import Delegation from "./Delegation";
 
 export default function Contributors(){
   return (
@@ -21,6 +22,10 @@ export default function Contributors(){
         {
           label: "Waiting Registration",
           component: (<WaitingConfirmation/>)
+        },
+        {
+          label: "Your profile",
+          component: (<Delegation/>)
         }
       ]}/>
     </>
