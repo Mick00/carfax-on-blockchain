@@ -36,6 +36,8 @@ const defaultValues = {
 const Register = () => {
   const [formValues, setFormValues] = useState(defaultValues);
   const [walletAddress, setWalletAddress] = useState(null);
+  const [alertSuccess, SetAlertSuccess] = useState(false);
+  const [alertError, SetAlertError] = useState(false);
   const [multiaddr, setMultiaddr] = useState('/ip4/127.0.0.1/tcp/5001');
   const [ipfsError, setIpfsError] = useState(null);
   const [id, setId] = useState(null)
@@ -52,7 +54,7 @@ const Register = () => {
     const signer = provider.getSigner();
     console.log("this is the " + signer);
     const signature = await signer.signMessage(JSON.stringify(values));
-    const constructedObject = '{ "data" :' + JSON.stringify(values) + '},' + '"signer" :' + signer + ',' + '"signature" :' + signature + '}';
+    const constructedObject = '{ "data" :' + JSON.stringify(values) + '},' + '"signer" :' + await signer.getAddress() + ',' + '"signature" :' + signature + '}';
 
     console.log(constructedObject);
     const blob = new Blob([constructedObject], { type: 'application/json' });
@@ -65,7 +67,7 @@ const Register = () => {
       const added = await ipfs.add(constructedObject);
       updateDb(values);
       //update put request to api update to state 1 
-      await sendOnChain("657658765934789760dgfhsga", values.walletAddress);
+      await sendOnChain(added, values.walletAddress);
       console.log("this is the hash that was saved: " + added.cid.toString());
     } catch (err) {
       console.log(err);
@@ -98,12 +100,19 @@ const Register = () => {
     const contracts = new ContractProvider(provider.getSigner() as unknown as JsonRpcProvider, 5);
     const contributorsContract = contracts.get("Contributors");
     //in the then update to state 3
-    contributorsContract.register(hash, address).then(r => r.wait(1)).then(c => console.log(c)).catch(err => console.log(err));
+    contributorsContract.register(hash, address).then(r => r.wait(1)).then(
+        (c) => {
+          console.log(c);
+          SetAlertSuccess(true);
+    }).catch((err) => {
+      console.log(err)
+      SetAlertError(true);
+    });
   }
 
   const handleSubmit = () => {
     // console.log(window.ethereum.selectedAddress);
-    setFormValues({ ...formValues, ["walletAddress"]: window.ethereum.selectedAddress, ["StateOfRegistration"]: "1" });
+    setFormValues({ ...formValues, ["StateOfRegistration"]: "1" });
     console.table(formValues);
     fetch('/api/register', {
       method: 'POST',
@@ -144,7 +153,7 @@ const Register = () => {
   return (
     <Grid container spacing={0}>
       <Grid item xs={12} lg={12}>
-        <BaseCard title="New Report">
+        <BaseCard title="Add contributer">
           <form onSubmit={!walletAddress}>
             <Stack spacing={3}>
               <TextField
@@ -155,7 +164,6 @@ const Register = () => {
                 value={formValues.companyName}
                 onChange={handleInputChange}
               />
-              <TextField id="car-id" label="Car ID" variant="outlined" />
               <FormControl>
                 <FormLabel id="demo-radio-buttons-group-label">Sector Of Activity</FormLabel>
                 <RadioGroup
@@ -213,7 +221,13 @@ const Register = () => {
                   style={{ width: '30%' }}
                 />
               </Box>
+              <Box
+                  component="form"
+                  noValidate
+                  autoComplete="off"
+              >
               <TextField
+                style={{ width: '40%', marginRight: '5%' }}
                 id="email"
                 label="Email"
                 variant="outlined"
@@ -222,19 +236,6 @@ const Register = () => {
                 onChange={handleInputChange}
               />
               <TextField
-                id="website"
-                label="Website"
-                variant="outlined"
-                name="website"
-                value={formValues.website}
-                onChange={handleInputChange}
-              />
-              <Box
-                component="form"
-                noValidate
-                autoComplete="off"
-              >
-                <TextField
                   id="phone"
                   label="Phone Number"
                   variant="outlined"
@@ -242,13 +243,37 @@ const Register = () => {
                   name="phoneNumber"
                   value={formValues.phoneNumber}
                   onChange={handleInputChange}
-                />
+              />
+                </Box>
+              <TextField
+                id="website"
+                label="Website"
+                variant="outlined"
+                name="website"
+                value={formValues.website}
+                onChange={handleInputChange}
+              />
+              <TextField
+                  id="walletAdress"
+                  label="Wallet Address"
+                  variant="outlined"
+                  name="walletAddress"
+                  value={formValues.walletAddress}
+                  onChange={handleInputChange}
+              />
+              <Box
+                component="form"
+                noValidate
+                autoComplete="off"
+              >
               </Box>
             </Stack>
             <br />
             <Button disable={checkAuth} onClick={handleSubmit} variant="contained">
               Submit
             </Button>
+            {alertSuccess && <Alert severity="success">Transaction submitted onChain successfully</Alert>}
+            {alertError && <Alert severity="error">Transaction failed</Alert>}
             {!walletAddress && <Alert severity="warning">Please login to metaMask before submitting</Alert>}
           </form>
         </BaseCard>

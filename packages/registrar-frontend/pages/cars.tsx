@@ -47,17 +47,29 @@ const Cars = () => {
   const [walletAddress, setWalletAddress] = useState(null);
   const [multiaddr, setMultiaddr] = useState('/ip4/127.0.0.1/tcp/5001');
   const [ipfsError, setIpfsError] = useState(null);
+  const [alertSuccess, SetAlertSuccess] = useState(false);
+  const [alertError, SetAlertError] = useState(false);
   const [id, setId] = useState(null)
   const [fileHash, setFileHash] = useState(null)
 
   const sendOnChain = async (serialNumber: any,odometer: any, hash : any) => {
+    console.log("this is the onchain hash sent : " + hash)
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     await provider.send("eth_requestAccounts", []);
     const contracts = new ContractProvider(provider.getSigner() as unknown as JsonRpcProvider, 5);
     const contributorsContract = contracts.get("Cars");
     contributorsContract.serialNumberToCar(serialNumber).then(r => console.log(r.toString())).catch(err => console.log(err));
     //in the then update to state 3
-    //contributorsContract.register(serialNumber, odometer, hash).then(r => r.wait(1)).then(c => console.log(c)).catch(err => console.log(err));
+    contributorsContract.register(serialNumber, odometer, hash).then(r => r.wait(1)).then((c) => {
+      console.log(c);
+      SetAlertError(false)
+      SetAlertSuccess(true);
+    }).catch((err) => {
+      console.log(err);
+      console.log("rentre ici")
+      // SetAlertError(true);
+      // SetAlertSuccess(false);
+    });
   }
 
   // const checkCarExist = async (serialNumber: any) => {
@@ -80,11 +92,11 @@ const Cars = () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signature = await signForm(values);
     const signer = provider.getSigner();
-    const constructedObject =  '{ "data" :' + JSON.stringify(values) + '},' + '"signer" :' + signer + ',' + '"signature" :' + signature + '}';
+    const constructedObject =  '{ "data" :' + JSON.stringify(values) + '},' + '"signer" :' + await signer.getAddress() + ',' + '"signature" :' + signature + '}';
     const ipfs = await connectToIPFS();
         try {
           const added = await ipfs.add(constructedObject);
-          await sendOnChain(values.serial_number, values.odometer, added);
+          await sendOnChain(values.serial_number, values.odometer, added.cid.toString());
           console.log("this is the hash that was saved: " + added.cid.toString());
         } catch (err) {
           console.log(err);
@@ -122,6 +134,8 @@ const Cars = () => {
 
   const handleSubmit = async () => {
     console.log(formValues);
+    SetAlertError(false)
+    SetAlertSuccess(false)
     if(formValues.make === '' || formValues.model === '' || formValues.year === '' ||formValues.color === '' || formValues.serial_number === '' || formValues.odometer === '') {
       setShowInvalidForm(true)
       return;
@@ -131,7 +145,7 @@ const Cars = () => {
     console.log(formValues);
 
     sendToIPFSandOnChain(formValues)
-    await sendOnChain("46773583845grhw", "1400000", "45768yetgsdfjnbnetuiouuyt45");
+    await sendOnChain(formValues.serial_number, formValues.odometer);
 
 
   }
@@ -210,6 +224,8 @@ const Cars = () => {
               Submit
             </Button>
             {showInvalidAlert && <Alert severity="warning">Please fill in all form fields</Alert>}
+            {alertSuccess && <Alert severity="success">Transaction submitted onChain successfully</Alert>}
+            {alertError && <Alert severity="error">Transaction failed</Alert>}
           </form>
         </BaseCard>
       </Grid>
