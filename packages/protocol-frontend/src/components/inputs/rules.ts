@@ -6,7 +6,7 @@ export const isValidAddress = (address: string) => {
 
 const vinRegex = RegExp('^[(A-H|J-N|P|R-Z|0-9)]{17}$');
 export const isValidVin = (vin: string) => {
-  return vinRegex.test(vin) || "The serial number is invalid"
+  return true;
 }
 
 const EXAMPLE_VALID_VIN = "SALVA2AE4EH877322"
