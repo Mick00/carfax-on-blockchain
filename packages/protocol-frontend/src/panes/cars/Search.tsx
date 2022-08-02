@@ -1,7 +1,7 @@
 import { useCOBApi } from "../../components/COBProvider";
 import { useForm } from "react-hook-form";
 import { useQuery } from "react-query";
-import {  Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import ControlledTextField from "../../components/inputs/ControlledTextField";
 import { isValidVin } from "../../components/inputs/rules";
 import React, { useState } from "react";
@@ -17,15 +17,17 @@ export default function CarSearch() {
 
   const onSubmit = (data: any) => setVin(data.vin);
 
-  const {data: odometer, isLoading: isLoadingOdometer } = useQuery(["cars", "odometer", vin], () =>
-    cars().getOdometerFromSerialNumber(vin),
-    { enabled: canRead && Boolean(vin)}
-  )
+  const { data: odometer, isLoading: isLoadingOdometer } = useQuery(
+    ["cars", "odometer", vin],
+    () => cars().getOdometerFromSerialNumber(vin),
+    { enabled: canRead && Boolean(vin) }
+  );
 
-  const {data: uri, isLoading: isLoadingURI} = useQuery(["cars", "URI", vin], () =>
-      cars().getTokenURIFromSerialNumber(vin),
-    { enabled: canRead && Boolean(vin)}
-  )
+  const { data: uri, isLoading: isLoadingURI } = useQuery(
+    ["cars", "URI", vin],
+    () => cars().getTokenURIFromSerialNumber(vin),
+    { enabled: canRead && Boolean(vin) }
+  );
 
   const isLoading = isLoadingOdometer || isLoadingURI;
 
@@ -33,18 +35,30 @@ export default function CarSearch() {
     <Box>
       <Typography gutterBottom>Search a car</Typography>
       <form>
-        <ControlledTextField name={"vin"} label={"VIN"} control={control} required rules={{isValidVin}}/>
-        <Button onClick={handleSubmit(onSubmit)} variant={"contained"}>Search</Button>
+        <ControlledTextField
+          name={"vin"}
+          label={"VIN"}
+          control={control}
+          required
+          rules={{ isValidVin }}
+        />
+        <Button onClick={handleSubmit(onSubmit)} variant={"contained"}>
+          Search
+        </Button>
       </form>
-      {isLoading && (<Typography>Loading...</Typography>)}
-      {vin && !uri && !odometer && (<Typography>No cars found</Typography>)}
+      {isLoading && <Typography>Loading...</Typography>}
+      {vin && !uri && !odometer && <Typography>No cars found</Typography>}
       {odometer && (
         <Box mt={1}>
-          <Typography >Car details</Typography>
-          <IPFSFile hash={uri??""}><Typography>Hash: {uri}</Typography></IPFSFile>
-          <Typography>Odometer: {formatUnits(odometer.toString(), 4)}</Typography>
+          <Typography variant={"h4"}>Car details</Typography>
+          <IPFSFile hash={uri ?? ""}>
+            <Typography>Hash: {uri}</Typography>
+          </IPFSFile>
+          <Typography>
+            Odometer: {formatUnits(odometer.toString(), 4)}
+          </Typography>
         </Box>
       )}
     </Box>
-  )
+  );
 }

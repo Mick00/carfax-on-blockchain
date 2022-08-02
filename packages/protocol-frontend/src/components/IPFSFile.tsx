@@ -1,26 +1,38 @@
 import React from "react";
-import { Box, Button, IconButton, Link, Menu, MenuItem, Stack } from "@mui/material";
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import {
+  Box,
+  Button,
+  IconButton,
+  Link,
+  Menu,
+  MenuItem,
+  Stack,
+} from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
-const PLACEHOLDER = "{CID}"
+const PLACEHOLDER = "{CID}";
 
 const gatewaysList = [
   {
     label: "ipfs.io",
-    url: `https://ipfs.io/ipfs/${PLACEHOLDER}`
-  }, {
+    url: `https://ipfs.io/ipfs/${PLACEHOLDER}`,
+  },
+  {
     label: "dweb.link",
-    url: `https://${PLACEHOLDER}.ipfs.dweb.link`
-  }
-]
+    url: `https://${PLACEHOLDER}.ipfs.dweb.link`,
+  },
+  {
+    label: "Local Node",
+    url: `http://127.0.0.1:8080/ipfs/${PLACEHOLDER}`,
+  },
+];
 
-interface IPFSFileProp extends React.PropsWithChildren{
-  hash: string,
-  clickable?: (handleClick: (event: any) => void) => React.ReactNode
+interface IPFSFileProp extends React.PropsWithChildren {
+  hash: string;
+  clickable?: (handleClick: (event: any) => void) => React.ReactNode;
 }
 
-export default function IPFSFile(props: IPFSFileProp){
-
+export default function IPFSFile(props: IPFSFileProp) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -37,20 +49,18 @@ export default function IPFSFile(props: IPFSFileProp){
   };
 
   return (
-    <Stack direction={"row"} sx={{"display": "inline"}}>
-      {props.clickable && (props.clickable(handleClick))}
+    <Stack direction={"row"} sx={{ display: "inline" }}>
+      {props.clickable && props.clickable(handleClick)}
       {!props.clickable && (
         <>
           {props.children}
-          <IconButton size={"small"} onClick={handleClick}><VisibilityIcon/></IconButton>
+          <IconButton size={"small"} onClick={handleClick}>
+            <VisibilityIcon />
+          </IconButton>
         </>
       )}
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-      >
-        {gatewaysList.map((gateway) =>(
+      <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+        {gatewaysList.map((gateway) => (
           <MenuItem>
             <Link
               href={gateway.url.replaceAll(PLACEHOLDER, props.hash)}
@@ -63,5 +73,5 @@ export default function IPFSFile(props: IPFSFileProp){
         ))}
       </Menu>
     </Stack>
-  )
+  );
 }

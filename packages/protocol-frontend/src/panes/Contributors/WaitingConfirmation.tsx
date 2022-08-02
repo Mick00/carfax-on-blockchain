@@ -32,11 +32,13 @@ export default function WaitingConfirmation() {
     async (): Promise<IContributor[]> => {
       const filter = contributorsContract.filters["Registered"](null, account);
       const registeredEvents = await contributorsContract.queryFilter(filter);
-      return registeredEvents.map((event) => ({
-        registrar: event.args.registrar,
-        address: event.args.contributor,
-        hash: event.args.contributorHash,
-      }));
+      return registeredEvents
+        .filter((event) => Boolean(event.args.contributorHash))
+        .map((event) => ({
+          registrar: event.args.registrar,
+          address: event.args.contributor,
+          hash: event.args.contributorHash,
+        }));
     },
     { enabled: canRead }
   );

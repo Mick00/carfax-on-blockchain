@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Button, Card, Stack, TextField, Typography } from "@mui/material";
 import { useCOBApi } from "../components/COBProvider";
 import { useForm, useWatch } from "react-hook-form";
@@ -9,16 +9,20 @@ import useCarId from "../components/hooks/useCarId";
 import IPFSFile from "../components/IPFSFile";
 
 function ResearchPane() {
-  const { handleSubmit, control, formState } = useForm({ mode: "onChange" });
+  const { handleSubmit, control } = useForm({ mode: "onChange" });
   const vin = useWatch({ control, name: "vin" });
   const { reports } = useCOBApi();
 
-  const { data: carId } = useCarId(vin);
+  const { data: carId, refetch: refetchCarId } = useCarId(vin);
 
-  const { data: reportsMeta } = useQuery(
+  useEffect(() => {
+    handleSubmit(refetchCarId);
+  }, [vin]);
+
+  const { data: reportsMeta, refetch } = useQuery(
     ["reports", "created", vin],
     async () => {
-      const filter = reports().filters["ReportCreated"]("0x0c");
+      const filter = reports().filters["ReportCreated"](carId);
       const reportsCreated = await reports().queryFilter(filter);
       return reportsCreated.map((event) => ({
         id: event.args.report,
@@ -69,17 +73,25 @@ function ResearchPane() {
           </Button>*/}
         </Stack>
         <Stack mt={2}>
+          <Typography variant={"h4"} gutterBottom>
+            Reports
+          </Typography>
+          {reportsMeta?.length === 0 && (
+            <Typography>No reports found</Typography>
+          )}
           {reportsHash &&
             reportsMeta?.map((meta, i) => (
-              <Card>
+              <Card key={i}>
                 <Box px={2} py={1}>
+                  <IPFSFile hash={reportsHash[i]}>
+                    Report {reportsHash[i].toString()}
+                  </IPFSFile>
                   <Typography>
-                    <IPFSFile hash={reportsHash[i]}>
-                      Report {reportsHash[i].toString()}
-                    </IPFSFile>{" "}
-                    by {meta?.contributor.toString()}(
-                    {meta.delegated.toString()}) at{" "}
-                    {meta?.blockNumber.toString()}
+                    Contributor: {meta?.contributor.toString()}(
+                    {meta.delegated.toString()})
+                  </Typography>
+                  <Typography>
+                    BlockNumber: {meta?.blockNumber.toString()}
                   </Typography>
                 </Box>
               </Card>

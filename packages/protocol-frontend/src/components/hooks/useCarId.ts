@@ -9,6 +9,7 @@ export default function useCarId(vin: string) {
     () => cars().serialNumberToCar(vin),
     {
       enabled: Boolean(vin) && canRead,
+      staleTime: Infinity,
     }
   );
 }
