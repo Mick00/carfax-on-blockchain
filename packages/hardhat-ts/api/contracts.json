@@ -602,7 +602,7 @@
           ]
         },
         "Contributors": {
-          "address": "0x3a4623BFB379766011a17D91dA0Ac81459DB9264",
+          "address": "0xe91eB620dd06F008E9395A8dDfcBEf111e0c3A02",
           "abi": [
             {
               "inputs": [
@@ -1238,7 +1238,7 @@
           ]
         },
         "ContributorsDelegation": {
-          "address": "0x4D3BD14640B25822fBDFFe1dc3E4b4889D8CFE72",
+          "address": "0xA0d95Dd2617fa44381a324352bEE7A4dd437BbA6",
           "abi": [
             {
               "inputs": [
@@ -1431,7 +1431,7 @@
           ]
         },
         "Reports": {
-          "address": "0xf9Bc5b23e6969d7a250388D36bD592643ef90C04",
+          "address": "0x584216c790671B0688aef38C75DE4d130dF3e187",
           "abi": [
             {
               "inputs": [
@@ -1747,6 +1747,11 @@
                   "internalType": "string",
                   "name": "_reportHash",
                   "type": "string"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "_odometer",
+                  "type": "uint256"
                 }
               ],
               "name": "create",
@@ -2179,7 +2184,7 @@
           ]
         },
         "Staking": {
-          "address": "0xB4c3e78D6EbA5c4ad5f5AD28B07F98735A5F3aca",
+          "address": "0x295be72659e759585C9781F7DC96DC1957a6f65E",
           "abi": [
             {
               "inputs": [
@@ -2365,6 +2370,30 @@
               "name": "unstake",
               "outputs": [],
               "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "name": "unstakeQueue",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "queuedAt",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
               "type": "function"
             }
           ]
