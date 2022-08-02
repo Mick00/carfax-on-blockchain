@@ -15,7 +15,8 @@ const gatewaysList = [
 ]
 
 interface IPFSFileProp extends React.PropsWithChildren{
-  hash: string
+  hash: string,
+  clickable?: (handleClick: (event: any) => void) => React.ReactNode
 }
 
 export default function IPFSFile(props: IPFSFileProp){
@@ -36,9 +37,14 @@ export default function IPFSFile(props: IPFSFileProp){
   };
 
   return (
-    <Stack direction={"row"}>
-      {props.children}
-      <IconButton size={"small"} onClick={handleClick}><VisibilityIcon/></IconButton>
+    <Stack direction={"row"} sx={{"display": "inline"}}>
+      {props.clickable && (props.clickable(handleClick))}
+      {!props.clickable && (
+        <>
+          {props.children}
+          <IconButton size={"small"} onClick={handleClick}><VisibilityIcon/></IconButton>
+        </>
+      )}
       <Menu
         anchorEl={anchorEl}
         open={open}

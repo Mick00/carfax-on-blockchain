@@ -16,7 +16,7 @@ export default function TransactionState({transaction}: TransactionStateProps) {
 
   return (
     <>
-      {transaction.isError && <p>Failed to add</p>}
+      {transaction.isError && <p>Verify input</p>}
       {transaction.isWaitingOnInput && <p>Waiting for input...</p>}
       {(transaction.isSubmitted && !transaction.isConfirmed) && <p>Waiting for confirmation...</p>}
       {transaction.isConfirmed && <p>Transaction confirmed</p>}</>

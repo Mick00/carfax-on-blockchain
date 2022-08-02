@@ -33,11 +33,11 @@ contract Reports is ERC721URIStorage, Ownable {
     cars = Cars(_cars);
   }
 
-  function create(uint256 _carId, string memory _reportHash) external returns (uint256) {
+  function create(uint256 _carId, string memory _reportHash, uint256 _odometer) external returns (uint256) {
     uint256 contributorId = contributorsDelegation.isDelegatedOf(msg.sender);
     require(contributorId != 0, "Caller must be a delegated.");
     require(cars.ownerOf(_carId) != address(0), "Car must be existing.");
-
+    cars.updateOdometer(_carId, _odometer);
     tokenIds++;
     super._mint(contributors.ownerOf(contributorId), tokenIds);
     super._setTokenURI(tokenIds, _reportHash);

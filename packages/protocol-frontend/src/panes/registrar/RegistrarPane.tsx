@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import { ethers } from "ethers";
-import { useCOBApi } from "../components/COBProvider";
+import { useCOBApi } from "../../components/COBProvider";
 import { useQuery } from "react-query";
 import { useWeb3React } from "@web3-react/core";
-import { useWriteContract } from "../components/hooks/useWriteContract";
+import { useWriteContract } from "../../components/hooks/useWriteContract";
 /*
 
 function AddRegistrar() {

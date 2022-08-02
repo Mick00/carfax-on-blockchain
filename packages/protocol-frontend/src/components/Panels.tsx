@@ -35,21 +35,22 @@ function TabPanel(props: TabPanelProps) {
 }
 
 export interface IPanelsProps {
-  panes: {label: string, component: React.ReactNode}[]
+  panes: {label: string, component: React.ReactNode, hide?: boolean}[]
 }
 
 export default function Panels(props: IPanelsProps) {
   const {panes} = props;
   const [tab, setTab] = useState(0);
+  const browsableTab = panes.filter(pane => !pane.hide)
 
   return (
     <Box sx={{width: "100%"}}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={tab} onChange={(event, value) => setTab(value)} aria-label="basic tabs example">
-          {panes.map((pane, i) => (<Tab label={pane.label} {...a11yProps(i)} key={i}/>))}
+          {browsableTab.map((pane, i) => pane.hide?null:(<Tab label={pane.label} {...a11yProps(i)} key={i}/>))}
         </Tabs>
       </Box>
-      {panes.map((pane, i) => (
+      {browsableTab.map((pane, i) => (
         <TabPanel value={tab} index={i} key={i}>
           {pane.component}
         </TabPanel>

@@ -1,13 +1,24 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { Cars, ContractProvider, Contributors, ContributorsDelegation, Reports } from "@cars-on-blockchain/contracts";
+import {
+  Cars,
+  ContractProvider,
+  Contributors,
+  ContributorsDelegation,
+  Reports,
+  Token,
+  Staking
+} from "@cars-on-blockchain/contracts";
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 import { JsonRpcProvider } from "@ethersproject/providers";
+
 interface ICOBApi {
   contributors(): Contributors,
   contributorDelegation(): ContributorsDelegation,
   cars(): Cars,
   reports(): Reports,
+  token(): Token,
+  staking(): Staking,
   canRead: boolean,
   canWrite: boolean
 }
@@ -23,6 +34,12 @@ const COBContext = createContext<ICOBApi>({
     throw new Error("No contract provider")
   },
   reports(): Reports {
+    throw new Error("No contract provider")
+  },
+  staking(): Staking {
+    throw new Error("No contract provider")
+  },
+  token(): Token {
     throw new Error("No contract provider")
   },
   canRead: false,
@@ -54,6 +71,7 @@ export default function COBProvider(props: React.PropsWithChildren) {
     if (!contracts){
       throw new Error("No provider to make calls")
     }
+
     return contracts;
   }
 
@@ -65,12 +83,18 @@ export default function COBProvider(props: React.PropsWithChildren) {
 
   const reports = () => getContracts().get("Reports");
 
+  const token = () => getContracts().get("Token");
+
+  const staking = () => getContracts().get("Staking")
+
   return (
     <COBContext.Provider value={{
       contributors,
       contributorDelegation,
       cars,
       reports,
+      token,
+      staking,
       canRead,
       canWrite
     }}>

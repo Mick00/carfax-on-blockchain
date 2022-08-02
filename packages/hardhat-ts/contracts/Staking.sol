@@ -24,7 +24,7 @@ contract Staking is Ownable {
         uint256 queuedAt;
     }
 
-    mapping(address => Unstake) unstakeQueue;
+    mapping(address => Unstake) public unstakeQueue;
 
     event StakeUpdated(address indexed _staker, uint stake);
   constructor(address _token) {

@@ -5,8 +5,21 @@ import Registration from "./Registration";
 import ContributorsList from "./ContributorsList";
 import WaitingConfirmation from "./WaitingConfirmation";
 import Delegation from "./Delegation";
+import { useWeb3React } from "@web3-react/core";
+import { useCOBApi } from "../../components/COBProvider";
+import { useForm } from "react-hook-form";
+import { useQuery } from "react-query";
 
 export default function Contributors(){
+  const {isActive, account} = useWeb3React();
+  const { contributors, canRead } = useCOBApi();
+
+  const {data: isRegistrar, isLoading} = useQuery(
+    `contributors.registrars.${account}`,
+    () =>  contributors().isRegistrar(account??"0x0"),
+    { enabled: isActive && canRead}
+  )
+
   return (
     <>
       <Typography variant={"h3"} sx={{textAlign:"center"}} gutterBottom>Contributors</Typography>
@@ -17,15 +30,18 @@ export default function Contributors(){
         },
         {
           label: "Registration",
-          component: (<Registration/>)
+          component: (<Registration/>),
+          hide: !isRegistrar
         },
         {
           label: "Waiting Registration",
-          component: (<WaitingConfirmation/>)
+          component: (<WaitingConfirmation/>),
+          hide: !isActive
         },
         {
           label: "Your profile",
-          component: (<Delegation/>)
+          component: (<Delegation/>),
+          hide: !isActive
         }
       ]}/>
     </>

@@ -2,6 +2,7 @@ import { useCOBApi } from "../../components/COBProvider";
 import React, { useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { useQuery } from "react-query";
+import IPFSFile from "../../components/IPFSFile";
 
 interface IContributor {
   id: number,
@@ -46,7 +47,7 @@ export default function ContributorsList() {
         <Box><Typography>No contributors found</Typography></Box>
       )}
       {contributors.map((contributor, i) => (
-        <Box key={i}><Typography>#{contributor.id}, hash: {contributor.uri}</Typography></Box>
+        <Box key={i}><Typography>#{contributor.id}, <IPFSFile hash={contributor.uri??""}>hash: {contributor.uri}</IPFSFile></Typography></Box>
       ))}
     </>
   )

@@ -37,10 +37,11 @@ export default function CarSearch() {
         <Button onClick={handleSubmit(onSubmit)} variant={"contained"}>Search</Button>
       </form>
       {isLoading && (<Typography>Loading...</Typography>)}
-      {!uri && !odometer && (<Typography>No cars found</Typography>)}
+      {vin && !uri && !odometer && (<Typography>No cars found</Typography>)}
       {odometer && (
         <Box mt={1}>
-          <IPFSFile hash={uri??""}><Typography>Uri: {uri}</Typography></IPFSFile>
+          <Typography >Car details</Typography>
+          <IPFSFile hash={uri??""}><Typography>Hash: {uri}</Typography></IPFSFile>
           <Typography>Odometer: {formatUnits(odometer.toString(), 4)}</Typography>
         </Box>
       )}

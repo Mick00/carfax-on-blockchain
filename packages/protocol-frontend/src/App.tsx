@@ -4,8 +4,10 @@ import AppProviders from "./components/AppProviders";
 import Dashboard from "./layouts/Dashboard";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Contributors from "./panes/Contributors";
-import RegistrarPane from "./panes/RegistrarPane";
+import RegistrarPane from "./panes/registrar/RegistrarPane";
 import Cars from "./panes/cars";
+import Staking from "./panes/registrar";
+import Registrar from "./panes/registrar";
 
 
 function App() {
@@ -16,7 +18,7 @@ function App() {
                     <Routes>
                         <Route path={"/"} element={<ResearchPane/>}/>
                         <Route path={"/contributors"} element={<Contributors/>}/>
-                        <Route path={"/registrars"} element={<RegistrarPane/>}/>
+                        <Route path={"/registrars"} element={<Registrar/>}/>
                         <Route path={"/cars"} element={<Cars/>}/>
                     </Routes>
                 </Dashboard>
