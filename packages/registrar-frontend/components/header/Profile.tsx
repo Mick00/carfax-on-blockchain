@@ -1,7 +1,7 @@
 import React from "react";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Image from "next/image";
-import userimg from "../../assets/users/3.jpg"
+import userimg from "../../assets/users/3.jpg";
 
 import {
   Box,
@@ -37,7 +37,7 @@ const ProfileDD = (props): JSX.Element => {
         <Box display="flex" alignItems="center">
           <Image
             src={userimg}
-            alt={'userimg'}
+            alt={"userimg"}
             width="30"
             height="30"
             className="roundedCircle"
@@ -66,7 +66,7 @@ const ProfileDD = (props): JSX.Element => {
                 ml: 1,
               }}
             >
-              {props.address.slice(0-5) + "..." + props.address.slice(37-42)}
+              {props.address.slice(0, 5) + "..." + props.address.slice(37, 42)}
             </Typography>
             <ExpandMoreIcon width="20" height="20" />
           </Box>
@@ -108,7 +108,12 @@ const ProfileDD = (props): JSX.Element => {
           <Divider />
           <Box p={2}>
             <Link>
-              <Button fullWidth variant="contained"  onClick={props.logout} color="primary">
+              <Button
+                fullWidth
+                variant="contained"
+                onClick={props.logout}
+                color="primary"
+              >
                 Logout
               </Button>
             </Link>
