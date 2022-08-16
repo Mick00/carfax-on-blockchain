@@ -7,6 +7,7 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import ControlledTextField from "../../components/inputs/ControlledTextField";
 import React, { useEffect } from "react";
 import { BigNumber } from "ethers";
+import TransactionState from "../../components/TransactionState";
 
 export default function Unstake() {
   const { staking, canRead } = useCOBApi();
@@ -62,15 +63,18 @@ export default function Unstake() {
         <Typography variant={"h4"}>Queue unstake</Typography>
         <Typography>Your current stake: {stake?.toString()}</Typography>
         <Typography>Unstaking requires a waiting period of 7 days</Typography>
-        <ControlledTextField
-          name={"quantity"}
-          label={"Quantity"}
-          control={control}
-          required
-        />
-        <Button onClick={handleSubmit(onSubmitQueue)} variant={"contained"}>
-          Queue
-        </Button>
+        <Stack direction={"row"} spacing={1} alignItems={"flex-start"}>
+          <ControlledTextField
+            name={"quantity"}
+            label={"Quantity"}
+            control={control}
+            required
+          />
+          <Button onClick={handleSubmit(onSubmitQueue)} variant={"contained"}>
+            Queue
+          </Button>
+        </Stack>
+        <TransactionState transaction={queueTx} />
       </Box>
       <Box>
         <Typography variant={"h4"}>Unstake</Typography>

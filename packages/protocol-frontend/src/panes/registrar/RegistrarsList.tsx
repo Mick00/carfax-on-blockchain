@@ -22,7 +22,6 @@ export default function RegistrarsList() {
       staleTime: 5000,
     }
   );
-  console.log(balanceUpdateEvents);
   const balanceUpdate = balanceUpdateEvents ?? [];
   const balancesPerRegistrar = balanceUpdate
     .map((event) => ({
@@ -39,12 +38,20 @@ export default function RegistrarsList() {
       return acc;
     }, {} as { [k: string]: BalanceUpdate });
 
-  const balances = Object.values(balancesPerRegistrar).sort((b0, b1) =>
-    b0.stake.sub(b1.stake).toNumber()
-  );
+  const balances = Object.values(balancesPerRegistrar)
+    .sort((b0, b1) => {
+      if (b0.stake.gt(b1.stake)) {
+        return -1;
+      }
+      if (b0.stake.lt(b1.stake)) {
+        return 1;
+      }
+      return 0;
+    })
+    .filter((bal) => bal.stake.gt(0));
 
   return (
-    <Stack>
+    <Stack spacing={1}>
       {balances.map((balance, i) => (
         <Card key={i}>
           <Box py={1} px={2}>
