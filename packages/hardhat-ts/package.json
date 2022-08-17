@@ -8,6 +8,7 @@
     "chain": "cross-env BUILDING=true hardhat node --network hardhat --no-deploy",
     "fork": "cross-env BUILDING=true hardhat node --fork https://mainnet.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad",
     "test": "yarn hardhat test --network hardhat",
+    "coverage": "yarn hardhat coverage --network hardhat",
     "compile": "cross-env BUILDING=true npx hardhat compile",
     "compile:package": "npx hardhat compile && tsc --project tsconfig.package.json",
     "deploy": "cross-env BUILDING=true yarn hardhat deploy --export-all ./api/contracts.json && yarn compile:package",

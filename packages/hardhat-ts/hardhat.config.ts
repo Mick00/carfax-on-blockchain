@@ -6,15 +6,13 @@ import './helpers/hardhat-imports';
 import path from 'path';
 
 import { hardhatNamedAccounts } from '@scaffold-eth/common/src/constants';
-import { getNetworks } from '@scaffold-eth/common/src/functions';
-import "dotenv/config";
+import 'dotenv/config';
 import glob from 'glob';
 import { removeConsoleLog } from 'hardhat-preprocessor';
 import { HardhatUserConfig } from 'hardhat/config';
 
+import { KILN_NETWORK } from './api/networks';
 import { getMnemonic } from './tasks/functions/mnemonic';
-import { KILN_NETWORK } from "./api/networks";
-import { ethers } from "ethers";
 
 /**
  * ⛳️⛳️⛳️⛳️⛳️⛳️⛳️⛳️⛳️⛳️
@@ -42,7 +40,7 @@ console.log('HARDHAT_TARGET_NETWORK: ', process.env.HARDHAT_TARGET_NETWORK);
  * loads network list and config from '@scaffold-eth/common/src
  */
 const networks = {
-/*  ...getNetworks({
+  /*  ...getNetworks({
     accounts: {
       mnemonic: getMnemonic(),
     },

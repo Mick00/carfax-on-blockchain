@@ -1,9 +1,18 @@
-# Prisma and DB config
+# Cars On Blockchain
+## Getting started
+1. Start by cloning the repo to your PC
+2. Generate the API to interact with the contracts with `yarn package`
+3. Follow the instructions for the front end you want to use
 
+# Protocol Frontend
+To start the server, you can simply run `yarn start:frontend`
+
+# Registrar Frontend
+You will need to have an IPFS node to store your files. You can use IPFS Desktop for that, make sure to run it in administrator mode.
 ## Setting up the DB with docker
 
 you need to have docker and docker compose https://docs.docker.com/compose/install/
-1. go in the root project and simply type this command: docker-compose up
+1. go in the root project and simply type this command: `docker-compose up`
 2. you can now see your db in docker and is on the localhost:3306
 
 ## Working with prisma 
@@ -26,7 +35,11 @@ to make a introspection db -> prisma schema
           2. make a object frequency by calling the PrismaClient() constructor : const prisma = new PrismaClient()<br/>
           3. make the query in this query we are asking for the first record (the fonction needs to be async) : const frequency1 = await     frequency.findFirst()<br/>
           4. we can now access the frequency object like this : frequency1.days
-# 🏗 Scaffold-Eth Typescript
+
+## Launching the server
+run the command `yarn start:registrar`
+
+# 🏗 This project uses Scaffold-Eth Typescript
 
 ## Typescript
 
