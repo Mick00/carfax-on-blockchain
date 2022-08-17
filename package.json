@@ -12,7 +12,7 @@
    "scripts": {
       "package": "yarn workspace @cars-on-blockchain/contracts compile:package",
       "start:protocol": "yarn workspace protocol-frontend start",
-      "start:registrar": "yarn workspace registrar-frontend dev",
+      "start:registrar": "yarn workspace registrar-frontend database && yarn workspace registrar-frontend dev",
       "contracts:build": "yarn workspace @scaffold-eth/hardhat compile && yarn workspace @scaffold-eth/vite-app contracts:hardhat && yarn workspace @scaffold-eth/vite-app contracts:external",
       "contracts:rebuild": "yarn workspace @scaffold-eth/hardhat clean && yarn contracts:build",
       "hardhat": "yarn workspace @scaffold-eth/hardhat hardhat",
