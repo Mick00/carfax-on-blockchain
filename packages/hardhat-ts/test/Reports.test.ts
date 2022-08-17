@@ -102,7 +102,7 @@ describe('Reports', function () {
     });
 
     it('Should create a new report', async () => {
-      await reportsContract.connect(delegated).create(carId, HASH);
+      await reportsContract.connect(delegated).create(carId, HASH, 1000);
       reportId = await reportsContract.getTokenIds();
       expect(reportId).to.equal(1);
       expect(await reportsContract.getTokenIds()).to.equal(1);
@@ -113,7 +113,7 @@ describe('Reports', function () {
     });
 
     it('Should change ownerOf reports if Contributor nft is transferred', async () => {
-      await reportsContract.connect(delegated).create(carId, HASH);
+      await reportsContract.connect(delegated).create(carId, HASH, 1000);
       reportId = await reportsContract.getTokenIds();
       expect(await reportsContract.getCreator(reportId)).to.equal(contributor.address);
       // await contributorsContract.approve(delegated.address, reportId);
@@ -124,23 +124,23 @@ describe('Reports', function () {
     it('Should create multiple report', async () => {
       const reportsIds = [];
       for (let i = 0; i < 10; i++) {
-        await reportsContract.connect(delegated).create(carId, HASH);
+        await reportsContract.connect(delegated).create(carId, HASH, 1000);
         reportsIds.push(await reportsContract.getTokenIds());
       }
       expect(await reportsContract.getReportsForCar(carId)).to.eql(reportsIds);
     });
 
     it('Should not create report since caller is not delegated', async () => {
-      await expect(reportsContract.connect(deployer).create(carId, HASH)).revertedWith(IS_DELEGATED);
+      await expect(reportsContract.connect(deployer).create(carId, HASH, 1000)).revertedWith(IS_DELEGATED);
     });
 
     it('Should not create report since car is not valid', async () => {
-      await expect(reportsContract.connect(delegated).create(2, HASH)).revertedWith(IS_EXISTENT_TOKEN);
+      await expect(reportsContract.connect(delegated).create(2, HASH, 1000)).revertedWith(IS_EXISTENT_TOKEN);
     });
 
     describe('Update process', function () {
       beforeEach(async () => {
-        await reportsContract.connect(delegated).create(carId, HASH);
+        await reportsContract.connect(delegated).create(carId, HASH, 1000);
         reportId = await reportsContract.getTokenIds();
       });
 
