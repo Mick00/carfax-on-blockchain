@@ -4,6 +4,9 @@ pragma solidity 0.8.14;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+/*
+    This is the contract for Cars NFT. It inherits the OpenZeppelin contract
+*/
 contract Cars is Ownable, ERC721URIStorage {
   mapping(string => uint256) public serialNumberToCar;
   mapping(uint256 => uint256) public carToOdometer;
@@ -15,6 +18,13 @@ contract Cars is Ownable, ERC721URIStorage {
 
   constructor() ERC721("CarFaxCars", "CFCa") {}
 
+
+    /*
+    @dev This methods mints a new Car NFT.
+    @param _serialNumber
+    @param _odometer The odometer value is in meters
+    @param _hash The IPFS hash
+    */
   function register(
     string memory _serialNumber,
     uint256 _odometer,
@@ -30,7 +40,11 @@ contract Cars is Ownable, ERC721URIStorage {
     return tokenIds;
   }
 
-  //Manque de securite pour le moment vu que le token appartient a address(this)
+  /*
+    @dev Manque de securite pour le moment vu que le token appartient a address(this)
+    @param _carId ID of the NFT representing the car
+    @param _odometer odometer value in meters
+  */
   function updateOdometer(uint256 _carId, uint256 _odometer) external {
     super.ownerOf(_carId);
     carToOdometer[_carId] = _odometer;

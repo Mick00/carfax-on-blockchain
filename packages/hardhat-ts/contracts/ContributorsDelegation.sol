@@ -5,7 +5,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "./Contributors.sol";
 
-//Each Registrar got their own contract
+/*
+This contract is used to delegate the contributors' permission to other addresses
+*/
 contract ContributorsDelegation is Ownable {
   using Address for address;
 

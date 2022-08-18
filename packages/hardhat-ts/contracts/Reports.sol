@@ -9,6 +9,9 @@ import "./Cars.sol";
 import "./ContributorsDelegation.sol";
 import "./Contributors.sol";
 
+/*
+This contract tokenize reports with NFT
+*/
 contract Reports is ERC721URIStorage, Ownable {
   using Address for address;
 
@@ -26,6 +29,10 @@ contract Reports is ERC721URIStorage, Ownable {
   event ReportUpdated(address delegated, uint256 indexed report);
   event ReportDeleted(address delegated, uint256 indexed report, string reason);
 
+    /*
+    @param _contributorsDelegation address of the contributor delegation contract
+    @param _cars address of the Cars contract
+    */
   constructor(address _contributorsDelegation, address _cars) ERC721("CarFaxReports", "CFR") {
     contributorsDelegation = ContributorsDelegation(_contributorsDelegation);
     contributors = contributorsDelegation.contributors();
@@ -33,6 +40,12 @@ contract Reports is ERC721URIStorage, Ownable {
     cars = Cars(_cars);
   }
 
+    /*
+    @dev It can only be called by a delegated user
+    @param _carId ID of the NFT representing the car
+    @param _reportHash IPFS hash of the report
+    @param _odometer odometer in metres
+    */
   function create(uint256 _carId, string memory _reportHash, uint256 _odometer) external returns (uint256) {
     uint256 contributorId = contributorsDelegation.isDelegatedOf(msg.sender);
     require(contributorId != 0, "Caller must be a delegated.");

@@ -6,7 +6,9 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 import "./Staking.sol";
-
+/*
+This contracts tokenize the contributor role with NFT
+*/
 contract Contributors is ERC721URIStorage, Ownable {
     Staking immutable staking;
 
@@ -17,12 +19,14 @@ contract Contributors is ERC721URIStorage, Ownable {
   //id count.
   uint256 private tokenIds;
 
-  //Events
-  event Registered(string contributorHash, address indexed contributor, address indexed registrar);
-  event ConfirmedRegistration(address indexed contributor, uint256 indexed tokenId);
-  event RemovedContributor(address indexed registrator, uint256 indexed tokenId);
-  event AddedRegistrar(address indexed registrar);
-  event RemovedRegistrar(address indexed registrar);
+    //Events
+    //Emitted when a registrar registers a contributor
+    event Registered(string contributorHash, address indexed contributor, address indexed registrar);
+    //Emitted when the contributor confirms his registration
+    event ConfirmedRegistration(address indexed contributor, uint256 indexed tokenId);
+    //Emitted when a registrars removes a contributor
+    event RemovedContributor(address indexed registrator, uint256 indexed tokenId);
+
 
   modifier onlyRegistrar() {
     require(_isRegistrar(msg.sender), "Caller is not a registrar");
@@ -34,7 +38,11 @@ contract Contributors is ERC721URIStorage, Ownable {
       staking = Staking(_staking);
   }
 
-  //Gas without registrar validation : 48671
+  /*
+  @dev This function should be called by registrars to register a new contributor
+  @param _contributorHash IPFS hash of the contributor's data
+  @param _contributor Address of the contributor to claim the NFT
+  */
   function register(string memory _contributorHash, address _contributor) external onlyRegistrar {
     address registrar = msg.sender;
     waitingForConfirmation[registrar][_contributor] = _contributorHash;
@@ -42,7 +50,10 @@ contract Contributors is ERC721URIStorage, Ownable {
     emit Registered(_contributorHash, _contributor, registrar);
   }
 
-  // Gas : 124010
+  /*
+  This function should be called by the contributor confirming his registration
+  @param _registrarAddress Address of the registrar the contributor is accepting the registration request
+  */
   function confirmRegistration(address _registrarAddress) external returns (uint256) {
     address contributor = msg.sender;
     string storage ipfsHash = waitingForConfirmation[_registrarAddress][contributor];

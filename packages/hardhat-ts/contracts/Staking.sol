@@ -25,8 +25,12 @@ contract Staking is Ownable {
     }
 
     mapping(address => Unstake) public unstakeQueue;
-
+// Emitted when a staker updates his stakes, either by staking or unstaking
     event StakeUpdated(address indexed _staker, uint stake);
+
+    /*
+    @param _token address of the token contract
+    */
   constructor(address _token) {
     TOKEN = _token;
 
